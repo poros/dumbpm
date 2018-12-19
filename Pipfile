@@ -1,0 +1,14 @@
+[[source]]
+name = "dumbpm"
+url = "https://pypi.org/simple"
+verify_ssl = true
+
+[dev-packages]
+coverage = "*"
+pytest = "*"
+pre-commit = "~=1.0"
+
+[packages]
+
+[requires]
+python_version = "3.7"
