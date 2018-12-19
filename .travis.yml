@@ -1,0 +1,13 @@
+language: python
+cache: pip
+dist: xenial
+python:
+  - 3.7
+
+install:
+  - pip install pipenv
+  - pip install tox
+  - pipenv install
+
+script:
+  - make test
