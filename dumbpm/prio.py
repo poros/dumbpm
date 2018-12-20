@@ -64,11 +64,6 @@ Solutions = Tuple[FrozenSet[Solution], float]
 Projects = Tuple[Tuple[float, float], ...]
 
 
-def pick_item(state: Solution, i: int) -> Solution:
-    """Return solution where item is picked starting from provided one."""
-    return state[:i] + (1,) + state[i + 1 :]
-
-
 def prio(
     projects: Projects,
     max_cost: float,
@@ -89,7 +84,7 @@ def prio(
                 max_cost,
                 tot_value + value,
                 tot_cost + cost,
-                pick_item(state, i),
+                state[:i] + (1,) + state[i + 1 :],
                 step + 1,
             )
             for i, (value, cost) in enumerate(projects_left)

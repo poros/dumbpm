@@ -4,7 +4,6 @@ from dumbpm.prio import actual_value
 from dumbpm.prio import any_negative
 from dumbpm.prio import normalize
 from dumbpm.prio import parse_input
-from dumbpm.prio import pick_item
 from dumbpm.prio import prioritize
 
 
@@ -29,13 +28,6 @@ def test_parse_input_negative() -> None:
 def test_parse_input() -> None:
     inp = [0, 1.0, 3.0]
     assert parse_input(inp) == inp
-
-
-def test_pick_item() -> None:
-    state = (0, 0, 1, 0, 1)
-    assert pick_item(state, 1) == (0, 1, 1, 0, 1)
-    state = (0, 0, 1, 0, 0)
-    assert pick_item(state, 4) == (0, 0, 1, 0, 1)
 
 
 def test_prioritize() -> None:
