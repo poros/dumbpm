@@ -21,9 +21,14 @@ def test_any_negative() -> None:
     assert any_negative([0, -1, 3])
 
 
-def test_parse_input() -> None:
+def test_parse_input_negative() -> None:
     with pytest.raises(ValueError):
         parse_input([0, -1, 3])
+
+
+def test_parse_input() -> None:
+    inp = [0, 1.0, 3.0]
+    assert parse_input(inp) == inp
 
 
 def test_pick_item() -> None:

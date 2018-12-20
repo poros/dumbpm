@@ -1,5 +1,6 @@
 from functools import reduce
 from typing import FrozenSet
+from typing import Iterable
 from typing import List
 from typing import Tuple
 
@@ -48,7 +49,7 @@ def prioritize(
         tuple(zip(params_value, cost)), max_cost, 0, 0, (0,) * len(projects), 0
     )
 
-    def sort(r: Solutions):
+    def sort(r: Iterable[Tuple[str, float]]) -> Iterable[Tuple[str, float]]:
         return sorted(r, key=lambda k: k[1], reverse=True)
 
     sorted_solutions = (
@@ -95,7 +96,7 @@ def prio(
             if (tot_cost + cost) <= max_cost
         }
     )
-    solutions = calls | curr
+    solutions: FrozenSet[Solutions] = calls | curr
     max_value = max(s[1] for s in solutions)
     best_sets = (s[0] for s in solutions if s[1] == max_value)
     return (reduce(lambda x, y: x | y, best_sets, frozenset()), max_value)

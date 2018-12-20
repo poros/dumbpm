@@ -4,7 +4,6 @@ minimal: venv
 venv: Pipfile Pipfile.lock
 	pipenv install --dev
 	pipenv run pre-commit install -f --install-hooks
-	pipenv shell
 
 .PHONY: test
 test:
