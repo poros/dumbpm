@@ -1,7 +1,7 @@
 .PHONY: minimal
 minimal: venv
 
-venv: tox.ini
+venv: tox.ini Pipfile Pipfile.lock
 	tox -e venv
 
 .PHONY: test
