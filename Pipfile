@@ -8,6 +8,8 @@ coverage = "*"
 pytest = "*"
 pre-commit = "~=1.0"
 mypy = "*"
+ipython = "*"
+ipdb = "*"
 
 [packages]
 
