@@ -1,8 +1,10 @@
 .PHONY: minimal
 minimal: venv
 
-venv: tox.ini Pipfile Pipfile.lock
-	tox -e venv
+venv: Pipfile Pipfile.lock
+	pipenv install --dev
+	pipenv run pre-commit install -f --install-hooks
+	pipenv shell
 
 .PHONY: test
 test:
