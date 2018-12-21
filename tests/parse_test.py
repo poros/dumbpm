@@ -1,19 +1,24 @@
 import pytest
 
-from dumbpm.parse import any_negative
 from dumbpm.parse import parse_input
 
 
-def test_any_negative() -> None:
-    assert not any_negative([1, 2, 3, 4, 0])
-    assert any_negative([0, -1, 3])
+def test_parse_input_not_found() -> None:
+    with pytest.raises(FileNotFoundError):
+        parse_input("tests/mamma.csv")
 
 
 def test_parse_input_negative() -> None:
     with pytest.raises(ValueError):
-        parse_input([0, -1, 3])
+        parse_input("tests/negative.csv")
 
 
 def test_parse_input() -> None:
-    inp = [0, 1.0, 3.0]
-    assert parse_input(inp) == inp
+    csv = parse_input("tests/prio.csv")
+    assert not csv.isnull().values.any()
+    assert set(csv.columns) == {"project", "value", "cost", "duration", "rigging"}
+    assert list(csv["project"].values) == ["Project A", "Project B", "C", "D"]
+    assert list(csv["value"].values) == [0.0, 1.0, 5.0, 0.0]
+    assert list(csv["cost"].values) == [4.0, 0.0, 2.0, 2.0]
+    assert list(csv["duration"].values) == [2.0, 1.0, 4.0, 6.0]
+    assert list(csv["rigging"].values) == [9.0, 0.0, 0.0, 5.0]
