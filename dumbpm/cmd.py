@@ -1,24 +1,25 @@
 import argparse
+from typing import List
 
 from dumbpm.parse import parse_input
 from dumbpm.prio import prioritize
 
 
-def cmd(args):
+def cmd(args: argparse.Namespace) -> List[List[str]]:
     csv = parse_input(args.filename)
-    print(
-        prioritize(
-            csv["project"],
-            csv["cost"],
-            csv["value"],
-            csv["duration"],
-            csv["rigging"],
-            args.budget,
-        )
+    projects = prioritize(
+        csv["project"],
+        csv["cost"],
+        csv["value"],
+        csv["duration"],
+        csv["rigging"],
+        args.budget,
     )
+    print(projects)
+    return projects
 
 
-if __name__ == "__main__":
+def create_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description="A very dumb PM")
     parser.set_defaults(func=None)
     subparsers = parser.add_subparsers(title="subcommands")
@@ -36,8 +37,17 @@ if __name__ == "__main__":
         help="Max budget allowed",
     )
     prio_parser.set_defaults(func=cmd)
+    return parser
+
+
+def main() -> None:
+    parser = create_parser()
     args = parser.parse_args()
     if args.func:
         args.func(args)
     else:
         parser.print_help()
+
+
+if __name__ == "__main__":
+    main()

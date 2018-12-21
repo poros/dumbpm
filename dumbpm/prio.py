@@ -83,7 +83,7 @@ def prio(
     solutions: FrozenSet[Solutions] = calls | curr
 
     @lru_cache()
-    def compute_best(solutions):
+    def compute_best(solutions: FrozenSet[Solutions]) -> Solutions:
         max_value = max(s[1] for s in solutions)
         best_sets = (s[0] for s in solutions if s[1] == max_value)
         return (reduce(lambda x, y: x | y, best_sets, frozenset()), max_value)
