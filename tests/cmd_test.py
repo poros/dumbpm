@@ -22,9 +22,9 @@ def test_create_parser_prioritize() -> None:
 def test_cmd() -> None:
     parser = create_parser()
     args = parser.parse_args(["prioritize", "tests/prio.csv", "--budget", "3"])
-    assert cmd(args) == [["C", "Project B"]]
+    assert cmd(args) == ["C", "Project B"]
     args = parser.parse_args(["prioritize", "tests/prio.csv"])
-    assert cmd(args) == [["C", "Project B", "Project A", "D"]]
+    assert cmd(args) == ["C", "Project B", "Project A", "D"]
 
 
 def test_main() -> None:

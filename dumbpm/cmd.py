@@ -5,7 +5,7 @@ from dumbpm.parse import parse_input
 from dumbpm.prio import prioritize
 
 
-def cmd(args: argparse.Namespace) -> List[List[str]]:
+def cmd(args: argparse.Namespace) -> List[str]:
     csv = parse_input(args.filename)
     projects = prioritize(
         csv["project"],

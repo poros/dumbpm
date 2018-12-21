@@ -1,7 +1,5 @@
 from functools import lru_cache
-from functools import reduce
 from typing import FrozenSet
-from typing import Iterable
 from typing import List
 from typing import Tuple
 
@@ -26,7 +24,7 @@ def prioritize(
     duration: List[float],
     rigging: List[float],
     max_cost: float,
-) -> List[List[str]]:
+) -> List[str]:
     """Prioritize projects based on cost, value, duration and rigging, also
     making sure that the cost doesn't go over the maximum cost.
     """
@@ -34,22 +32,16 @@ def prioritize(
         normalize(cost), normalize(value), normalize(duration), normalize(rigging)
     )
     params_value = [actual_value(*p) for p in params]
-    solutions = prio(
+    solution = prio(
         tuple(zip(params_value, cost)), max_cost, 0, 0, (0,) * len(projects), 0
     )
-
-    def sort(r: Iterable[Tuple[str, float]]) -> Iterable[Tuple[str, float]]:
-        return sorted(r, key=lambda k: k[1], reverse=True)
-
-    sorted_solutions = (
-        sort((projects[i], params_value[i]) for i, p in enumerate(s) if p)
-        for s in solutions[0]
-    )
-    return [[i[0] for i in s] for s in sorted_solutions]
+    answer = ((projects[i], params_value[i]) for i, p in enumerate(solution[0]) if p)
+    sorted_answer = sorted(answer, key=lambda k: k[1], reverse=True)
+    return [a[0] for a in sorted_answer]
 
 
-Solution = Tuple[int, ...]
-Solutions = Tuple[FrozenSet[Solution], float]
+State = Tuple[int, ...]
+Solution = Tuple[State, float]
 Projects = Tuple[Tuple[float, float], ...]
 
 
@@ -58,13 +50,11 @@ def prio(
     max_cost: float,
     tot_value: float,
     tot_cost: float,
-    state: Solution,
+    state: State,
     step: int,
-) -> Solutions:
+) -> Solution:
     """Actual function for prioritization."""
-    curr = frozenset(
-        {(frozenset({state}), sum(projects[i][0] for i, y in enumerate(state) if y))}
-    )
+    curr = frozenset({(state, sum(projects[i][0] for i, y in enumerate(state) if y))})
     projects_left = projects[step:]
     calls = frozenset(
         {
@@ -80,12 +70,11 @@ def prio(
             if (tot_cost + cost) <= max_cost
         }
     )
-    solutions: FrozenSet[Solutions] = calls | curr
+    solutions: FrozenSet[Solution] = calls | curr
 
     @lru_cache()
-    def compute_best(solutions: FrozenSet[Solutions]) -> Solutions:
+    def compute_best(solutions: FrozenSet[Solution]) -> Solution:
         max_value = max(s[1] for s in solutions)
-        best_sets = (s[0] for s in solutions if s[1] == max_value)
-        return (reduce(lambda x, y: x | y, best_sets, frozenset()), max_value)
+        return (next(s[0] for s in solutions if s[1] == max_value), max_value)
 
     return compute_best(solutions)
