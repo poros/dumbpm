@@ -15,7 +15,8 @@ def cmd(args: argparse.Namespace) -> List[str]:
         csv["rigging"],
         args.budget,
     )
-    print(projects)
+    for i, p in enumerate(projects, 1):
+        print(f"{i:02d} {p}")
     return projects
 
 
