@@ -1,3 +1,4 @@
+from functools import lru_cache
 from functools import reduce
 from typing import FrozenSet
 from typing import Iterable
@@ -80,6 +81,11 @@ def prio(
         }
     )
     solutions: FrozenSet[Solutions] = calls | curr
-    max_value = max(s[1] for s in solutions)
-    best_sets = (s[0] for s in solutions if s[1] == max_value)
-    return (reduce(lambda x, y: x | y, best_sets, frozenset()), max_value)
+
+    @lru_cache()
+    def compute_best(solutions):
+        max_value = max(s[1] for s in solutions)
+        best_sets = (s[0] for s in solutions if s[1] == max_value)
+        return (reduce(lambda x, y: x | y, best_sets, frozenset()), max_value)
+
+    return compute_best(solutions)
