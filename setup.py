@@ -11,4 +11,5 @@ setup(
     ],
     install_requires=[],
     packages=find_packages(exclude=("tests*", "testing*")),
+    entry_points={"console_scripts": ["dumbpm=dumbpm.cmd:main"]},
 )
