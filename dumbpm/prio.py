@@ -1,6 +1,6 @@
-from functools import lru_cache
-from typing import FrozenSet
+from typing import Dict
 from typing import List
+from typing import NamedTuple
 from typing import Tuple
 
 
@@ -15,6 +15,15 @@ def normalize(items: List[float]) -> List[float]:
     """Normalizes all items between 0 and 1."""
     n = max(items)
     return [i / n for i in items]
+
+
+class Item(NamedTuple):
+    name: str
+    value: float
+    weight: float
+
+
+Items = Tuple[Item, ...]
 
 
 def prioritize(
@@ -33,48 +42,36 @@ def prioritize(
     )
     params_value = [actual_value(*p) for p in params]
     solution = prio(
-        tuple(zip(params_value, cost)), max_cost, 0, 0, (0,) * len(projects), 0
+        tuple(Item(*x) for x in zip(projects, params_value, cost)), max_cost, {}
     )
-    answer = ((projects[i], params_value[i]) for i, p in enumerate(solution[0]) if p)
-    sorted_answer = sorted(answer, key=lambda k: k[1], reverse=True)
-    return [a[0] for a in sorted_answer]
+    sorted_solution = sorted(solution, key=lambda k: k[1], reverse=True)
+    return [s[0] for s in sorted_solution]
 
 
-State = Tuple[int, ...]
-Solution = Tuple[State, float]
-Projects = Tuple[Tuple[float, float], ...]
+def tot_value(items: Items, max_weight: float) -> float:
+    """Compute total value of a list of items, but return 0 if they weight more
+    than max.
+    """
+    return (
+        sum([i.value for i in items])
+        if sum([i.weight for i in items]) <= max_weight
+        else 0
+    )
 
 
 def prio(
-    projects: Projects,
-    max_cost: float,
-    tot_value: float,
-    tot_cost: float,
-    state: State,
-    step: int,
-) -> Solution:
+    items: Items, max_weight: float, mem: Dict[Tuple[Items, float], Items]
+) -> Items:
     """Actual function for prioritization."""
-    curr = frozenset({(state, sum(projects[i][0] for i, y in enumerate(state) if y))})
-    projects_left = projects[step:]
-    calls = frozenset(
-        {
-            prio(
-                projects,
-                max_cost,
-                tot_value + value,
-                tot_cost + cost,
-                state[:i] + (1,) + state[i + 1 :],
-                step + 1,
-            )
-            for i, (value, cost) in enumerate(projects_left)
-            if (tot_cost + cost) <= max_cost
-        }
-    )
-    solutions: FrozenSet[Solution] = calls | curr
-
-    @lru_cache()
-    def compute_best(solutions: FrozenSet[Solution]) -> Solution:
-        max_value = max(s[1] for s in solutions)
-        return (next(s[0] for s in solutions if s[1] == max_value), max_value)
-
-    return compute_best(solutions)
+    if not items:
+        return ()
+    if (items, max_weight) not in mem:
+        excluded = prio(items[1:], max_weight, mem)
+        included = (items[0],) + prio(items[1:], max_weight - items[0].weight, mem)
+        solution = (
+            included
+            if tot_value(included, max_weight) > tot_value(excluded, max_weight)
+            else excluded
+        )
+        mem[(items, max_weight)] = solution
+    return mem[(items, max_weight)]

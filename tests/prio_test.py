@@ -1,6 +1,8 @@
 from dumbpm.prio import actual_value
+from dumbpm.prio import Item
 from dumbpm.prio import normalize
 from dumbpm.prio import prioritize
+from dumbpm.prio import tot_value
 
 
 def test_actual_value() -> None:
@@ -9,6 +11,11 @@ def test_actual_value() -> None:
 
 def test_normalize() -> None:
     assert normalize([5, 6, 1, 2, 4, 10]) == [0.5, 0.6, 0.1, 0.2, 0.4, 1]
+
+
+def test_tot_value() -> None:
+    assert tot_value((Item("A", 1, 1), Item("B", 2, 1), Item("C", 3, 1)), 3) == 6.0
+    assert tot_value((Item("A", 1, 1), Item("B", 2, 1), Item("C", 3, 1)), 2) == 0.0
 
 
 def test_prioritize() -> None:
