@@ -27,7 +27,7 @@ def test_prioritize() -> None:
     cost = [10.0, 10.0, 10.0, 10.0]
     duration = [10.0, 10.0, 10.0, 10.0]
     rigging = [0.0, 10.0, 0.0, 1.0]
-    alternatives = [(), (), (), ()]
+    alternatives: List[Tuple[str, ...]] = [(), (), (), ()]
     max_cost = 20.0
     assert prioritize(
         projects, cost, value, duration, rigging, alternatives, max_cost
