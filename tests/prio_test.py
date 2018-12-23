@@ -1,3 +1,6 @@
+from typing import List
+from typing import Tuple
+
 from dumbpm.prio import actual_value
 from dumbpm.prio import Item
 from dumbpm.prio import normalize
@@ -24,5 +27,21 @@ def test_prioritize() -> None:
     cost = [10.0, 10.0, 10.0, 10.0]
     duration = [10.0, 10.0, 10.0, 10.0]
     rigging = [0.0, 10.0, 0.0, 1.0]
+    alternatives = [(), (), (), ()]
     max_cost = 20.0
-    assert prioritize(projects, cost, value, duration, rigging, max_cost) == ["B", "D"]
+    assert prioritize(
+        projects, cost, value, duration, rigging, alternatives, max_cost
+    ) == ["B", "D"]
+
+
+def test_prioritize_with_alternatives() -> None:
+    projects = ["A", "B", "C", "D"]
+    value = [10.0, 10.0, 10.0, 10.0]
+    cost = [10.0, 10.0, 10.0, 10.0]
+    duration = [10.0, 10.0, 10.0, 10.0]
+    rigging = [0.0, 10.0, 0.1, 1.0]
+    alternatives: List[Tuple[str, ...]] = [(), ("D",), (), ("B",)]
+    max_cost = 20.0
+    assert prioritize(
+        projects, cost, value, duration, rigging, alternatives, max_cost
+    ) == ["B", "C"]

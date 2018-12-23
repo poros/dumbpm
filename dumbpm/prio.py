@@ -32,17 +32,20 @@ def prioritize(
     value: List[float],
     duration: List[float],
     rigging: List[float],
+    alternatives: List[Tuple[str, ...]],
     max_cost: float,
 ) -> List[str]:
     """Prioritize projects based on cost, value, duration and rigging, also
-    making sure that the cost doesn't go over the maximum cost.
+    making sure that the cost doesn't go over the maximum cost. Projects listed
+    as alternative of each other won't be selected together.
     """
     params = zip(
         normalize(cost), normalize(value), normalize(duration), normalize(rigging)
     )
     params_value = [actual_value(*p) for p in params]
+    alts = dict(zip(projects, alternatives))
     solution = prio(
-        tuple(Item(*x) for x in zip(projects, params_value, cost)), max_cost, {}
+        tuple(Item(*x) for x in zip(projects, params_value, cost)), max_cost, {}, alts
     )
     sorted_solution = sorted(solution, key=lambda k: k[1], reverse=True)
     return [s[0] for s in sorted_solution]
@@ -60,14 +63,21 @@ def tot_value(items: Items, max_weight: float) -> float:
 
 
 def prio(
-    items: Items, max_weight: float, mem: Dict[Tuple[Items, float], Items]
+    items: Items,
+    max_weight: float,
+    mem: Dict[Tuple[Items, float], Items],
+    alts: Dict[str, Tuple[str, ...]],
 ) -> Items:
     """Actual function for prioritization."""
     if not items:
         return ()
     if (items, max_weight) not in mem:
-        excluded = prio(items[1:], max_weight, mem)
-        included = (items[0],) + prio(items[1:], max_weight - items[0].weight, mem)
+        excluded = prio(items[1:], max_weight, mem, alts)
+        alternatives = alts[items[0][0]]
+        items_left = tuple(i for i in items[1:] if i[0] not in alternatives)
+        included = (items[0],) + prio(
+            items_left, max_weight - items[0].weight, mem, alts
+        )
         solution = (
             included
             if tot_value(included, max_weight) > tot_value(excluded, max_weight)

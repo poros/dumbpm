@@ -13,6 +13,7 @@ def cmd(args: argparse.Namespace) -> List[str]:
         csv["value"],
         csv["duration"],
         csv["rigging"],
+        csv["alternative"],
         args.budget,
     )
     for i, p in enumerate(projects, 1):
