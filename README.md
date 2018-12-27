@@ -8,9 +8,13 @@ A pretty dumb PM.
 
 At the moment it only does projects prioritization: it is pretty dumb, indeed.
 
+The whole philosophy behind `dumbpm` is that PMs (project managers, product managers, people managers, pokemon masters, etc.) all do some tasks that could use some automation, but at the same time this automation should be as dumb as possible. There are so many changing factors that influence such tasks that you better hire a PM (or a team of researchers to do the automation) to do the clever stuff, not a random software on the internet. In addition, if we keep it dumb, people can just read the code and understand what is going on, if they really want.
+
+If you have any suggestions for something (but nothing clever!) that you would like dumbpm to do for you, open an issue and let me know.
+
 ## Prioritization
 
-Giving a table of projetcs defined as below, it outputs a list of projects in order of priority within the optinally specified budget.
+Giving a table of projetcs defined as below, it outputs a list of projects in order of priority within the optinally specified budget (prioritization as "data problem").
 
 ```bash
 $ dumbpm prioritize --help
@@ -32,7 +36,7 @@ Project definition happens in a CSV file with the following structure:
 - `Value`: value of the project
 - `Cost`: cost of the project
 - `Duration`: duration of the project expressed in unit of times
-- `Rigging`: arbitrary value used to rig the result; the highest the more likely the project to be prioritized
+- `Rigging`: arbitrary value used to rig the result (yay, cheating!); the highest the more likely the project to be prioritized
 - `Alternative`: comma separated list of projects that are incompatible with this one (e.g.; make lunch vs buy lunch)
 
 Any field which is not specified, will be filled with 0.
