@@ -15,3 +15,8 @@ clean:
 	find . -name '__pycache__' -delete
 	rm -rf .tox
 	rm -rf venv
+	rm -rf dist
+
+.PHONY: dist
+dist: venv
+	pipenv run python setup.py sdist bdist_wheel

@@ -15,7 +15,7 @@ setup(
         "Programming Language :: Python :: 3",
         "Programming Language :: Python :: 3.7",
     ],
-    install_requires=[],
+    install_requires=["pandas"],
     packages=find_packages(exclude=("tests*", "testing*")),
     entry_points={"console_scripts": ["dumbpm=dumbpm.cmd:main"]},
     description="A pretty dumb PM.",
