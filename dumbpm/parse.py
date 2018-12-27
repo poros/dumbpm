@@ -10,6 +10,7 @@ def parse_input(filename: str) -> DataFrame:
     """Parse csv input file using pandas."""
     csv = read_csv(filename)
     csv.rename(columns=lambda c: c.lower().strip("s"), inplace=True)
+    csv.rename(columns={"pq": "cost"}, inplace=True)
     csv.rename(columns={"rig": "rigging"}, inplace=True)
     csv.rename(columns={"alt": "alternative"}, inplace=True)
     if "alternative" not in csv:

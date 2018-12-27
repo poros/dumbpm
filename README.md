@@ -15,10 +15,11 @@ Project definition happens in a CSV file with the following structure:
 - `Cost`: cost of the project
 - `Duration`: duration of the project expressed in unit of times
 - `Rigging`: arbitrary value used to rig the result; the highest the more likely the project to be prioritized
+- `Alternative`: comma separated list of projects that are incompatible with this one (e.g.; make lunch vs buy lunch)
 
 Any field which is not specified, will be filled with 0.
 
-There is a bit of slack on the headers of the columns (e.g.; Project, Projects, project, etc. are all alright).
+There is a bit of slack on the headers of the columns (e.g.; Project, Projects, project, etc. are all alright). Notable mentions: rig and rigging both work; same for alts and alternatives; PQ can be used instead of cost if that's your thing.
 
 
 ## Usage
@@ -52,17 +53,18 @@ optional arguments:
 
 ```bash
 $ cat projects.csv
-Project,Value,Cost,Duration,Rigging
-Buy a better espresso machine,5,4,2,9
-Buy ambient parfume for the back,1,1,1,
-Find and remove source of bad smell,5,2,4,10
-Find better coffee vendors,4,2,6,5
-Buy smart component for roaster,3,5,2,
-Introduce a periodical suggestion survey for treats,3,2,6,
-Buy a more modern sign,3,3,1,
-Contact a designer to re-think the front,5,5,6,
-Buy beds for powernaps,1,3,1,
-Import treats from France,2,4,2,
+Project,Value,Cost,Duration,Rigging,Alternatives
+Buy a better espresso machine,5,4,2,9,
+Buy ambient parfume for the back,1,1,1,,
+Find and remove source of bad smell,5,2,4,10,
+Find better coffee vendors,4,2,6,5,
+Buy smart component for roaster,3,5,2,,Build in-house roasting notification system
+Introduce a periodical suggestion survey for treats,3,2,6,,
+Buy a more modern sign,3,3,1,,
+Contact a designer to re-think the front,5,5,6,,
+Buy beds for powernaps,1,3,1,,
+Import treats from France,2,4,2,,
+Build in-house roasting notification system,3,5,6,,Buy smart component for roaster
 
 $ dumbpm prioritize projects.csv
 01 Buy ambient parfume for the back
@@ -75,7 +77,6 @@ $ dumbpm prioritize projects.csv
 08 Import treats from France
 09 Introduce a periodical suggestion survey for treats
 10 Contact a designer to re-think the front
-11 Build in-house roasting notification system
 
 $ dumbpm prioritize projects.csv --budget 10
 01 Buy ambient parfume for the back
