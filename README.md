@@ -6,7 +6,25 @@
 
 A pretty dumb PM.
 
-At the moment only offers project prioritization, but it is indeed pretty dumb.
+At the moment it only does projects prioritization: it is pretty dumb, indeed.
+
+## Prioritization
+
+Giving a table of projetcs defined as below, it outputs a list of projects in order of priority within the optinally specified budget.
+
+```bash
+$ dumbpm prioritize --help
+usage: dumbpm prioritize [-h] [--budget [BUDGET]] filename
+
+positional arguments:
+  filename           CSV file with projects definition
+
+optional arguments:
+  -h, --help         show this help message and exit
+  --budget [BUDGET]  Max budget allowed
+```
+
+### Projects format
 
 Project definition happens in a CSV file with the following structure:
 
@@ -22,34 +40,23 @@ Any field which is not specified, will be filled with 0.
 There is a bit of slack on the headers of the columns (e.g.; Project, Projects, project, etc. are all alright). Notable mentions: rig and rigging both work; same for alts and alternatives; PQ can be used instead of cost if that's your thing.
 
 
-## Usage
-```bash
-$ dumbpm --help
-usage: dumbpm [-h] {prioritize} ...
+| Project                                             | Value | Cost | Duration | Rigging | Alternatives                                |
+|-----------------------------------------------------|-------|------|----------|---------|---------------------------------------------|
+| Buy a better espresso machine                       | 5     | 4    | 2        | 9       |                                             |
+| Buy ambient parfume for the back                    | 1     | 1    | 1        |         |                                             |
+| Find and remove source of bad smell                 | 5     | 2    | 4        | 10      |                                             |
+| Find better coffee vendors                          | 4     | 2    | 6        | 5       |                                             |
+| Buy smart component for roaster                     | 3     | 5    | 2        |         | Build in-house roasting notification system |
+| Introduce a periodical suggestion survey for treats | 3     | 2    | 6        |         |                                             |
+| Buy a more modern sign                              | 3     | 3    | 1        |         |                                             |
+| Contact a designer to re-think the front            | 5     | 5    | 6        |         |                                             |
+| Buy beds for powernaps                              | 1     | 3    | 1        |         |                                             |
+| Import treats from France                           | 2     | 4    | 2        |         |                                             |
+| Build in-house roasting notification system         | 3     | 5    | 6        |         | Buy smart component for roaster             |
 
-A very dumb PM
 
-optional arguments:
-  -h, --help    show this help message and exit
 
-subcommands:
-  {prioritize}
-    prioritize  Prioritize projects in a very dumb way
-```
-
-```bash
-$ dumbpm prioritize --help
-usage: dumbpm prioritize [-h] [--budget [BUDGET]] filename
-
-positional arguments:
-  filename           CSV file with projects definition
-
-optional arguments:
-  -h, --help         show this help message and exit
-  --budget [BUDGET]  Max budget allowed
-```
-
-## Example
+### Example
 
 ```bash
 $ cat projects.csv

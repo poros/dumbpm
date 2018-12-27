@@ -5,7 +5,7 @@ from dumbpm.parse import parse_input
 from dumbpm.prio import prioritize
 
 
-def cmd(args: argparse.Namespace) -> List[str]:
+def cmd_prioritize(args: argparse.Namespace) -> List[str]:
     csv = parse_input(args.filename)
     projects = prioritize(
         csv["project"],
@@ -21,10 +21,7 @@ def cmd(args: argparse.Namespace) -> List[str]:
     return projects
 
 
-def create_parser() -> argparse.ArgumentParser:
-    parser = argparse.ArgumentParser(description="A very dumb PM")
-    parser.set_defaults(func=None)
-    subparsers = parser.add_subparsers(title="subcommands")
+def create_subparser_prioritize(subparsers: argparse._SubParsersAction) -> None:
     prio_parser = subparsers.add_parser(
         "prioritize", help="Prioritize projects in a very dumb way"
     )
@@ -38,7 +35,14 @@ def create_parser() -> argparse.ArgumentParser:
         default=float("Inf"),
         help="Max budget allowed",
     )
-    prio_parser.set_defaults(func=cmd)
+    prio_parser.set_defaults(func=cmd_prioritize)
+
+
+def create_parser() -> argparse.ArgumentParser:
+    parser = argparse.ArgumentParser(description="A very dumb PM")
+    parser.set_defaults(func=None)
+    subparsers = parser.add_subparsers(title="subcommands")
+    create_subparser_prioritize(subparsers)
     return parser
 
 
