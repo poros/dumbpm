@@ -16,7 +16,7 @@ If you have any suggestions for something (but nothing clever!) that you would l
 
 Giving a table of projetcs defined as below, it outputs a list of projects in order of priority within the optionally specified budget (prioritization as "data problem").
 
-The prioritized list is modelled as the exact solution of a [Knapsack Problem](https://en.wikipedia.org/wiki/Knapsack_problem) with the following value function: `norm(value) / (norm(cost) * norm(duration) + norm(rigging)`. Pretty dumb, indeed.
+The prioritized list is modelled as the exact solution of a [Knapsack Problem](https://en.wikipedia.org/wiki/Knapsack_problem) with the following value function: `norm(value) / ((norm(cost) * norm(duration)) + norm(rigging)`. Pretty dumb, indeed.
 
 ```bash
 $ dumbpm prioritize --help
