@@ -20,3 +20,7 @@ clean:
 .PHONY: dist
 dist: venv
 	pipenv run python setup.py sdist bdist_wheel
+
+.PHONY: upload-to-pypi
+upload-to-pypi: dist
+	twine upload dist/*
