@@ -23,4 +23,4 @@ dist: venv
 
 .PHONY: upload-to-pypi
 upload-to-pypi: dist
-	twine upload dist/*
+	pipenv run twine upload dist/*
