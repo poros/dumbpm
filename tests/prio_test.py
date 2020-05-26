@@ -30,8 +30,50 @@ def test_prioritize() -> None:
     alternatives: List[Tuple[str, ...]] = [(), (), (), ()]
     max_cost = 20.0
     assert prioritize(
-        projects, cost, value, duration, rigging, alternatives, max_cost
+        projects,
+        cost,
+        value,
+        duration,
+        rigging,
+        alternatives,
+        max_cost,
+        duration_cost_budget=False,
     ) == ["B", "D"]
+
+
+def test_prioritize_duration_cost_budget() -> None:
+    projects = ["A", "B", "C", "D"]
+    value = [100.0, 20.0, 100.0, 10.0]
+    cost = [10.0, 10.0, 10.0, 10.0]
+    duration = [10.0, 10.0, 50.0, 10.0]
+    multiplied_cost = [100.0, 100.0, 500.0, 100.0]
+    unit_duration = [1.0, 1.0, 1.0, 1.0, 1.0]
+    rigging = [0.0, 0.0, 0.0, 0.0]
+    alternatives: List[Tuple[str, ...]] = [(), (), (), ()]
+    max_cost = 200.0
+    assert (
+        prioritize(
+            projects,
+            cost,
+            value,
+            duration,
+            rigging,
+            alternatives,
+            max_cost,
+            duration_cost_budget=True,
+        )
+        == prioritize(
+            projects,
+            multiplied_cost,
+            value,
+            unit_duration,
+            rigging,
+            alternatives,
+            max_cost,
+            duration_cost_budget=False,
+        )
+        == ["A", "B"]
+    )
 
 
 def test_prioritize_with_alternatives() -> None:
@@ -43,5 +85,12 @@ def test_prioritize_with_alternatives() -> None:
     alternatives: List[Tuple[str, ...]] = [(), ("D",), (), ("B",)]
     max_cost = 20.0
     assert prioritize(
-        projects, cost, value, duration, rigging, alternatives, max_cost
+        projects,
+        cost,
+        value,
+        duration,
+        rigging,
+        alternatives,
+        max_cost,
+        duration_cost_budget=False,
     ) == ["B", "C"]

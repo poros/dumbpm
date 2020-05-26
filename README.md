@@ -18,6 +18,8 @@ Giving a table of projetcs defined as below, it outputs a list of projects in or
 
 The prioritized list is modelled as the exact solution of a [Knapsack Problem](https://en.wikipedia.org/wiki/Knapsack_problem) with the following value function: `norm(value) / ((norm(cost) * norm(duration)) + norm(rigging)`. Pretty dumb, indeed.
 
+If budget isn't specified, the list will simply be sorted by the result of the above value function. By default, cost is the only thing counted against the budget, but there is an option to use (cost * duration) instead.
+
 ```bash
 $ dumbpm prioritize --help
 usage: dumbpm prioritize [-h] [--budget [BUDGET]] filename
@@ -28,6 +30,8 @@ positional arguments:
 optional arguments:
   -h, --help         show this help message and exit
   --budget [BUDGET]  Max budget allowed
+  --duration-cost-budget
+                     Budget is (cost * duration) instead of only cost
 ```
 
 ### Projects format
@@ -44,6 +48,8 @@ Project definition happens in a CSV file with the following structure:
 Any field which is not specified, will be filled with 0.
 
 There is a bit of slack on the headers of the columns (e.g.; Project, Projects, project, etc. are all alright). Notable mentions: rig and rigging both work; same for alts and alternatives; PQ can be used instead of cost if that's your thing.
+
+Columns `duration`, `rigging` and `alternatives` can be entirely omitted.
 
 
 | Project                                             | Value | Cost | Duration | Rigging | Alternatives                                |

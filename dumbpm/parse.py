@@ -11,7 +11,11 @@ def parse_input(filename: str) -> DataFrame:
     csv = read_csv(filename)
     csv.rename(columns=lambda c: c.lower().strip("s"), inplace=True)
     csv.rename(columns={"pq": "cost"}, inplace=True)
+    if "duration" not in csv:
+        csv["duration"] = [1] * len(csv["project"])
     csv.rename(columns={"rig": "rigging"}, inplace=True)
+    if "rigging" not in csv:
+        csv["rigging"] = [0] * len(csv["project"])
     csv.rename(columns={"alt": "alternative"}, inplace=True)
     if "alternative" not in csv:
         csv["alternative"] = [""] * len(csv["project"])

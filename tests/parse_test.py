@@ -13,6 +13,34 @@ def test_parse_input_negative() -> None:
         parse_input("tests/negative.csv")
 
 
+def test_parse_no_duration() -> None:
+    csv = parse_input("tests/prio_no_duration.csv")
+    assert not csv.isnull().values.any()
+    assert set(csv.columns) == {
+        "project",
+        "value",
+        "cost",
+        "duration",
+        "rigging",
+        "alternative",
+    }
+    assert list(csv["duration"].values) == [1, 1, 1, 1]
+
+
+def test_parse_no_rigging() -> None:
+    csv = parse_input("tests/prio_no_rig.csv")
+    assert not csv.isnull().values.any()
+    assert set(csv.columns) == {
+        "project",
+        "value",
+        "cost",
+        "duration",
+        "rigging",
+        "alternative",
+    }
+    assert list(csv["rigging"].values) == [0, 0, 0, 0]
+
+
 def test_parse_no_alternatives() -> None:
     csv = parse_input("tests/prio_no_alt.csv")
     assert not csv.isnull().values.any()
@@ -24,7 +52,6 @@ def test_parse_no_alternatives() -> None:
         "rigging",
         "alternative",
     }
-    assert not csv.isnull().values.any()
     assert list(csv["alternative"].values) == [(), (), (), ()]
 
 

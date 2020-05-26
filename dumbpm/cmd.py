@@ -15,6 +15,7 @@ def cmd_prioritize(args: argparse.Namespace) -> List[str]:
         csv["rigging"],
         csv["alternative"],
         args.budget,
+        args.duration_cost_budget,
     )
     for i, p in enumerate(projects, 1):
         print(f"{i:02d} {p}")
@@ -35,6 +36,13 @@ def create_subparser_prioritize(subparsers: argparse._SubParsersAction) -> None:
         default=float("Inf"),
         help="Max budget allowed",
     )
+
+    prio_parser.add_argument(
+        "--duration-cost-budget",
+        action="store_true",
+        help="Budget is (cost * duration) instead of only cost",
+    )
+
     prio_parser.set_defaults(func=cmd_prioritize)
 
 

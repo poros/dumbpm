@@ -1,0 +1,5 @@
+Projects,Value,cost,Rig,alternatives
+Project A,,4,9,"Project B"
+Project B,1,,,"Project A, C"
+C,5,2,,Project B
+D,,2,5
