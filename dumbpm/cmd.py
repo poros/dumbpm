@@ -12,6 +12,7 @@ def cmd_prioritize(args: argparse.Namespace) -> List[str]:
         csv["cost"],
         csv["value"],
         csv["duration"],
+        csv["risk"],
         csv["rigging"],
         csv["alternative"],
         args.budget,

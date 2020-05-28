@@ -9,7 +9,7 @@ from dumbpm.prio import tot_value
 
 
 def test_actual_value() -> None:
-    assert actual_value(10, 5, 6, 10) == 5 / (10 * 6) + 10
+    assert actual_value(10, 5, 6, 3, 10) == 5 / (10 * 6 * 3) + 10
 
 
 def test_normalize() -> None:
@@ -26,6 +26,7 @@ def test_prioritize() -> None:
     value = [10.0, 10.0, 10.0, 10.0]
     cost = [10.0, 10.0, 10.0, 10.0]
     duration = [10.0, 10.0, 10.0, 10.0]
+    risk = [3.0, 3.0, 3.0, 3.0]
     rigging = [0.0, 10.0, 0.0, 1.0]
     alternatives: List[Tuple[str, ...]] = [(), (), (), ()]
     max_cost = 20.0
@@ -34,6 +35,7 @@ def test_prioritize() -> None:
         cost,
         value,
         duration,
+        risk,
         rigging,
         alternatives,
         max_cost,
@@ -47,7 +49,8 @@ def test_prioritize_duration_cost_budget() -> None:
     cost = [10.0, 10.0, 10.0, 10.0]
     duration = [10.0, 10.0, 50.0, 10.0]
     multiplied_cost = [100.0, 100.0, 500.0, 100.0]
-    unit_duration = [1.0, 1.0, 1.0, 1.0, 1.0]
+    unit_duration = [1.0, 1.0, 1.0, 1.0]
+    risk = [3.0, 3.0, 3.0, 3.0]
     rigging = [0.0, 0.0, 0.0, 0.0]
     alternatives: List[Tuple[str, ...]] = [(), (), (), ()]
     max_cost = 200.0
@@ -57,6 +60,7 @@ def test_prioritize_duration_cost_budget() -> None:
             cost,
             value,
             duration,
+            risk,
             rigging,
             alternatives,
             max_cost,
@@ -67,6 +71,7 @@ def test_prioritize_duration_cost_budget() -> None:
             multiplied_cost,
             value,
             unit_duration,
+            risk,
             rigging,
             alternatives,
             max_cost,
@@ -81,6 +86,7 @@ def test_prioritize_with_alternatives() -> None:
     value = [10.0, 10.0, 10.0, 10.0]
     cost = [10.0, 10.0, 10.0, 10.0]
     duration = [10.0, 10.0, 10.0, 10.0]
+    risk = [3.0, 3.0, 3.0, 3.0]
     rigging = [0.0, 10.0, 0.1, 1.0]
     alternatives: List[Tuple[str, ...]] = [(), ("D",), (), ("B",)]
     max_cost = 20.0
@@ -89,6 +95,7 @@ def test_prioritize_with_alternatives() -> None:
         cost,
         value,
         duration,
+        risk,
         rigging,
         alternatives,
         max_cost,

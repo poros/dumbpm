@@ -21,10 +21,26 @@ def test_parse_no_duration() -> None:
         "value",
         "cost",
         "duration",
+        "risk",
         "rigging",
         "alternative",
     }
     assert list(csv["duration"].values) == [1, 1, 1, 1]
+
+
+def test_parse_no_risk() -> None:
+    csv = parse_input("tests/prio_no_duration.csv")
+    assert not csv.isnull().values.any()
+    assert set(csv.columns) == {
+        "project",
+        "value",
+        "cost",
+        "duration",
+        "risk",
+        "rigging",
+        "alternative",
+    }
+    assert list(csv["risk"].values) == [1, 1, 1, 1]
 
 
 def test_parse_no_rigging() -> None:
@@ -35,6 +51,7 @@ def test_parse_no_rigging() -> None:
         "value",
         "cost",
         "duration",
+        "risk",
         "rigging",
         "alternative",
     }
@@ -49,6 +66,7 @@ def test_parse_no_alternatives() -> None:
         "value",
         "cost",
         "duration",
+        "risk",
         "rigging",
         "alternative",
     }
@@ -73,6 +91,7 @@ def test_parse_input() -> None:
         "value",
         "cost",
         "duration",
+        "risk",
         "rigging",
         "alternative",
     }
@@ -80,6 +99,7 @@ def test_parse_input() -> None:
     assert list(csv["value"].values) == [0.0, 1.0, 5.0, 0.0]
     assert list(csv["cost"].values) == [4.0, 0.0, 2.0, 2.0]
     assert list(csv["duration"].values) == [2.0, 1.0, 4.0, 6.0]
+    assert list(csv["risk"].values) == [5.0, 1.0, 1.0, 1.0]
     assert list(csv["rigging"].values) == [9.0, 0.0, 0.0, 5.0]
     assert list(csv["alternative"].values) == [
         ("Project B",),

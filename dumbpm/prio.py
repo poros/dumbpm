@@ -4,11 +4,13 @@ from typing import NamedTuple
 from typing import Tuple
 
 
-def actual_value(cost: float, value: float, duration: float, rigging: float) -> float:
+def actual_value(
+    cost: float, value: float, duration: float, risk: float, rigging: float
+) -> float:
     """Compute actual value for a project, paying attention to zeros."""
     cost = cost or 1
     duration = duration or 1
-    return value / (cost * duration) + rigging
+    return value / (cost * duration * risk) + rigging
 
 
 def normalize(items: List[float]) -> List[float]:
@@ -31,6 +33,7 @@ def prioritize(
     cost: List[float],
     value: List[float],
     duration: List[float],
+    risk: List[float],
     rigging: List[float],
     alternatives: List[Tuple[str, ...]],
     max_cost: float,
@@ -42,7 +45,11 @@ def prioritize(
     simply be cost or (cost * duration) if duration_cost_budget is True.
     """
     params = zip(
-        normalize(cost), normalize(value), normalize(duration), normalize(rigging)
+        normalize(cost),
+        normalize(value),
+        normalize(duration),
+        normalize(risk),
+        normalize(rigging),
     )
     params_value = [actual_value(*p) for p in params]
     selected_cost = (

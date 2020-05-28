@@ -16,7 +16,7 @@ If you have any suggestions for something (but nothing clever!) that you would l
 
 Giving a table of projetcs defined as below, it outputs a list of projects in order of priority within the optionally specified budget (prioritization as "data problem").
 
-The prioritized list is modelled as the exact solution of a [Knapsack Problem](https://en.wikipedia.org/wiki/Knapsack_problem) with the following value function: `norm(value) / ((norm(cost) * norm(duration)) + norm(rigging)`. Pretty dumb, indeed.
+The prioritized list is modelled as the exact solution of a [Knapsack Problem](https://en.wikipedia.org/wiki/Knapsack_problem) with the following value function: `norm(value) / ((norm(cost) * norm(duration) * norm(risk)) + norm(rigging)`. Pretty dumb, indeed.
 
 If budget isn't specified, the list will simply be sorted by the result of the above value function. By default, cost is the only thing counted against the budget, but there is an option to use (cost * duration) instead.
 
@@ -42,6 +42,7 @@ Project definition happens in a CSV file with the following structure:
 - `Value`: value of the project
 - `Cost`: cost of the project
 - `Duration`: duration of the project expressed in unit of times
+- `Risk`: risk of failure of the project
 - `Rigging`: arbitrary value used to rig the result (yay, cheating!); the highest the more likely the project to be prioritized
 - `Alternative`: comma separated list of projects that are incompatible with this one (e.g.; make lunch vs buy lunch)
 
@@ -49,22 +50,22 @@ Any field which is not specified, will be filled with 0.
 
 There is a bit of slack on the headers of the columns (e.g.; Project, Projects, project, etc. are all alright). Notable mentions: rig and rigging both work; same for alts and alternatives; PQ can be used instead of cost if that's your thing.
 
-Columns `duration`, `rigging` and `alternatives` can be entirely omitted.
+Columns `duration`, `risk`, `rigging` and `alternatives` can be entirely omitted.
 
 
-| Project                                             | Value | Cost | Duration | Rigging | Alternatives                                |
-|-----------------------------------------------------|-------|------|----------|---------|---------------------------------------------|
-| Buy a better espresso machine                       | 5     | 4    | 2        | 9       |                                             |
-| Buy ambient parfume for the back                    | 1     | 1    | 1        |         |                                             |
-| Find and remove source of bad smell                 | 5     | 2    | 4        | 10      |                                             |
-| Find better coffee vendors                          | 4     | 2    | 6        | 5       |                                             |
-| Buy smart component for roaster                     | 3     | 5    | 2        |         | Build in-house roasting notification system |
-| Introduce a periodical suggestion survey for treats | 3     | 2    | 6        |         |                                             |
-| Buy a more modern sign                              | 3     | 3    | 1        |         |                                             |
-| Contact a designer to re-think the front            | 5     | 5    | 6        |         |                                             |
-| Buy beds for powernaps                              | 1     | 3    | 1        |         |                                             |
-| Import treats from France                           | 2     | 4    | 2        |         |                                             |
-| Build in-house roasting notification system         | 3     | 5    | 6        |         | Buy smart component for roaster             |
+| Project                                             | Value | Cost | Duration | Risk | Rigging | Alternatives                                |
+|-----------------------------------------------------|-------|------|----------|------|---------|---------------------------------------------|
+| Buy a better espresso machine                       | 5     | 4    | 2        |1     | 9       |                                             |
+| Buy ambient parfume for the back                    | 1     | 1    | 1        |1     |         |                                             |
+| Find and remove source of bad smell                 | 5     | 2    | 4        |4     | 10      |                                             |
+| Find better coffee vendors                          | 4     | 2    | 6        |3     | 5       |                                             |
+| Buy smart component for roaster                     | 3     | 5    | 2        |3     |         | Build in-house roasting notification system |
+| Introduce a periodical suggestion survey for treats | 3     | 2    | 6        |1     |         |                                             |
+| Buy a more modern sign                              | 3     | 3    | 1        |1     |         |                                             |
+| Contact a designer to re-think the front            | 5     | 5    | 6        |3     |         |                                             |
+| Buy beds for powernaps                              | 1     | 3    | 1        |1     |         |                                             |
+| Import treats from France                           | 2     | 4    | 2        |2     |         |                                             |
+| Build in-house roasting notification system         | 3     | 5    | 6        |5     |         | Buy smart component for roaster             |
 
 
 

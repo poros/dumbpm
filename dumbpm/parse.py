@@ -13,6 +13,8 @@ def parse_input(filename: str) -> DataFrame:
     csv.rename(columns={"pq": "cost"}, inplace=True)
     if "duration" not in csv:
         csv["duration"] = [1] * len(csv["project"])
+    if "risk" not in csv:
+        csv["risk"] = [1] * len(csv["project"])
     csv.rename(columns={"rig": "rigging"}, inplace=True)
     if "rigging" not in csv:
         csv["rigging"] = [0] * len(csv["project"])
