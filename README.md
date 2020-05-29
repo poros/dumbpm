@@ -10,7 +10,7 @@ At the moment it only does projects prioritization: it is pretty dumb, indeed.
 
 The whole philosophy behind `dumbpm` is that PMs (project managers, program managers,product managers, people managers, pokemon masters, etc.) all do some tasks that could use some automation, but at the same time this automation should be as dumb as possible. There are so many changing factors that influence such tasks that you better hire a PM (or a team of researchers to do the automation) to do the clever stuff, not a random software on the internet. In addition, if we keep it dumb, people can just read the code and understand what is going on, if they really want to.
 
-If you have any suggestions for something (but nothing clever!) that you would like dumbpm to do for you, open an issue and let me know.
+If you have any suggestions for something (but nothing clever!) that you would like `dumbpm` to do for you, open an issue and let me know.
 
 ## Prioritization
 
@@ -70,7 +70,7 @@ There is a bit of slack on the headers of the columns (e.g. `Project`, `Projects
 
 ### Example
 
-```bash
+```text
 $ cat projects.csv
 Project,Value,Cost,Duration,Rigging,Alternatives
 Buy a better espresso machine,5,4,2,9,
