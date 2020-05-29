@@ -9,8 +9,8 @@ def cmd_prioritize(args: argparse.Namespace) -> List[str]:
     csv = parse_input(args.filename)
     projects = prioritize(
         csv["project"],
-        csv["cost"],
         csv["value"],
+        csv["cost"],
         csv["duration"],
         csv["risk"],
         csv["rigging"],

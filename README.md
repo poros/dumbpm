@@ -16,7 +16,7 @@ If you have any suggestions for something (but nothing clever!) that you would l
 
 Giving a table of projetcs defined as below, it outputs a list of projects in order of priority within the optionally specified budget (prioritization as "data problem").
 
-The prioritized list is modelled as the exact solution of a [Knapsack Problem](https://en.wikipedia.org/wiki/Knapsack_problem) with the following value function: `norm(value) / ((norm(cost) * norm(duration) * norm(risk)) + norm(rigging)`. Pretty dumb, indeed.
+The prioritized list is modelled as the exact solution of a [Knapsack Problem](https://en.wikipedia.org/wiki/Knapsack_problem) with the following value function: `norm(norm(value) / (norm(cost) * norm(duration) * norm(risk))) + norm(rigging)`. Pretty dumb, indeed.
 
 If budget isn't specified, the list will simply be sorted by the result of the above value function. By default, cost is the only thing counted against the budget, but there is an option to use (cost * duration) instead.
 
@@ -43,7 +43,7 @@ Project definition happens in a CSV file with the following structure:
 - `Cost`: cost of the project
 - `Duration`: duration of the project expressed in unit of times
 - `Risk`: risk of failure of the project
-- `Rigging`: arbitrary value used to rig the result (yay, cheating!); the highest the more likely the project to be prioritized
+- `Rigging`: arbitrary value used to rig the result (yay, cheating!); the highest the more likely the project to be prioritized (keep in mind that this counts for half of the score of a project)
 - `Alternative`: comma separated list of projects that are incompatible with this one (e.g.; make lunch vs buy lunch)
 
 Any field which is not specified, will be filled with 0.

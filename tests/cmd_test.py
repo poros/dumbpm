@@ -42,7 +42,7 @@ def test_cmd_prioritize() -> None:
     )
     assert cmd_prioritize(args) == ["C", "Project B"]
     args = parser.parse_args(["prioritize", "tests/prio_no_alt.csv"])
-    assert cmd_prioritize(args) == ["C", "Project B", "Project A", "D"]
+    assert cmd_prioritize(args) == ["Project A", "C", "D", "Project B"]
 
 
 def test_main() -> None:

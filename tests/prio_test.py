@@ -1,19 +1,31 @@
 from typing import List
 from typing import Tuple
 
-from dumbpm.prio import actual_value
+from dumbpm.prio import combined_value
+from dumbpm.prio import compute_actual_value
 from dumbpm.prio import Item
 from dumbpm.prio import normalize
 from dumbpm.prio import prioritize
 from dumbpm.prio import tot_value
 
 
-def test_actual_value() -> None:
-    assert actual_value(10, 5, 6, 3, 10) == 5 / (10 * 6 * 3) + 10
+def test_combined_value() -> None:
+    assert combined_value(5, 10, 6, 3) == 5 / (10 * 6 * 3)
+    assert combined_value(1, 0, 0, 0) == 1
 
 
 def test_normalize() -> None:
     assert normalize([5, 6, 1, 2, 4, 10]) == [0.5, 0.6, 0.1, 0.2, 0.4, 1]
+
+
+def test_compute_actual_value() -> None:
+    value = [10.0, 20.0]
+    cost = [10.0, 20.0]
+    duration = [10.0, 20.0]
+    risk = [3.0, 6.0]
+    rigging = [1.0, 5.0]
+
+    assert compute_actual_value(value, cost, duration, risk, rigging) == [1.2, 1.25]
 
 
 def test_tot_value() -> None:
@@ -32,8 +44,8 @@ def test_prioritize() -> None:
     max_cost = 20.0
     assert prioritize(
         projects,
-        cost,
         value,
+        cost,
         duration,
         risk,
         rigging,
@@ -57,8 +69,8 @@ def test_prioritize_duration_cost_budget() -> None:
     assert (
         prioritize(
             projects,
-            cost,
             value,
+            cost,
             duration,
             risk,
             rigging,
@@ -68,8 +80,8 @@ def test_prioritize_duration_cost_budget() -> None:
         )
         == prioritize(
             projects,
-            multiplied_cost,
             value,
+            multiplied_cost,
             unit_duration,
             risk,
             rigging,
@@ -92,8 +104,8 @@ def test_prioritize_with_alternatives() -> None:
     max_cost = 20.0
     assert prioritize(
         projects,
-        cost,
         value,
+        cost,
         duration,
         risk,
         rigging,
