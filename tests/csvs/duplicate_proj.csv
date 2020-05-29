@@ -1,0 +1,5 @@
+Projects,Value,PQs,durations,risk,Rig,alternatives
+Project A,0,4,2,5,9,"Project B"
+Project B,1,0,1,1,,"Project A, C"
+C,5,2,4,1,0,Project B
+Project B,0,2,6,1,5

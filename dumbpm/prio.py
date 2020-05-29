@@ -4,21 +4,15 @@ from typing import NamedTuple
 from typing import Tuple
 
 
-def combined_value(value: float, cost: float, duration: float, risk: float) -> float:
-    """Compute the combined value for a project, paying attention to zeros."""
-    cost = cost or 1
-    duration = duration or 1
-    risk = risk or 1
-    return value / (cost * duration * risk)
-
-
-def normalize(items: List[float]) -> List[float]:
-    """Normalizes all items between 0 and 1."""
+def norm(items: List[float]) -> List[float]:
+    """Normalize all items between (0 , 1) by min-max normalization,
+    but set min=0 because 0s will degrade the prioritization algorithm.
+    """
     n = max(items)
-    return [i / n for i in items] if n > 0 else [0] * len(items)
+    return [i / n for i in items] if n > 0 else [0.0] * len(items)
 
 
-def compute_actual_value(
+def compute_score(
     value: List[float],
     cost: List[float],
     duration: List[float],
@@ -26,23 +20,43 @@ def compute_actual_value(
     rigging: List[float],
 ) -> List[float]:
     """
-    Compute the actual value (used for prioriitization) of each item by
-    norm(norm(value) / (norm(cost) * norm(duration) * norm(risk))) + norm(rigging)
+    Compute the score (used for prioritization) of each item by
+    norm(norm(value) / norm(norm(cost) + norm(duration) + norm(risk))) + norm(rigging)
+
+    Normalization between each operation is necessary because the algorithm makes no
+    assumption about the interval of each parameter.
     """
-    params = zip(
-        normalize(value), normalize(cost), normalize(duration), normalize(risk),
+    numerator = norm(value)
+    denominator = norm(
+        [c + d + r for c, d, r in zip(norm(cost), norm(duration), norm(risk))]
     )
-    params_value = normalize([combined_value(*p) for p in params])
-    return [sum(x) for x in zip(params_value, normalize(rigging))]
+    if 0 in denominator:
+        raise ValueError(
+            "At least one project has 0 as combination of cost, duration and risk"
+        )
+    fraction = norm([n / d for n, d in zip(numerator, denominator)])
+    return [f + r for f, r in zip(fraction, norm(rigging))]
 
 
 class Item(NamedTuple):
     name: str
-    value: float
+    score: float
     weight: float
 
 
 Items = Tuple[Item, ...]
+
+
+def combine_cost_and_duration(
+    cost: List[float], duration: List[float]
+) -> Tuple[List[float], List[float]]:
+    """If cost is assumed to be per unit of duration, multuply them in a single cost
+    parameter and erase duration from the equation, so not to account for it twice.
+    """
+    combined_cost = [c * d for c, d in zip(cost, duration)]
+    # duration is part of a sum operation, so we can erase it by making it 0
+    erased_duration = [0.0] * len(duration)
+    return combined_cost, erased_duration
 
 
 def prioritize(
@@ -54,37 +68,36 @@ def prioritize(
     rigging: List[float],
     alternatives: List[Tuple[str, ...]],
     max_cost: float,
-    duration_cost_budget: bool,
+    cost_per_duration: bool,
 ) -> List[str]:
     """Prioritize projects based on cost, value, duration and rigging, also making sure
     that the cost doesn't go over the maximum cost.
     Projects listed as alternative of each other won't be selected together.
-    For the formula used to compute the actual value of each item see
-    compute_actual_value.
-    The cost of an item can simply be cost or
-    (cost * duration) if duration_cost_budget is True.
+    For the formula used to compute the prioritizaion score of each item see
+    compute_score.
+    If cost_per_duration is True, cost is assumed to be per unit of duration.
     """
-    actual_value = compute_actual_value(value, cost, duration, risk, rigging)
-    selected_cost = (
-        [c * d for c, d in zip(cost, duration)] if duration_cost_budget else cost
+    n_cost, n_duration = (
+        combine_cost_and_duration(cost, duration)
+        if cost_per_duration
+        else (cost, duration)
     )
+    score = compute_score(value, n_cost, n_duration, risk, rigging)
+    weight = n_cost
     alts = dict(zip(projects, alternatives))
     solution = prio(
-        tuple(Item(*x) for x in zip(projects, actual_value, selected_cost)),
-        max_cost,
-        {},
-        alts,
+        tuple(Item(*x) for x in zip(projects, score, weight)), max_cost, {}, alts,
     )
     sorted_solution = sorted(solution, key=lambda k: k[1], reverse=True)
     return [s[0] for s in sorted_solution]
 
 
-def tot_value(items: Items, max_weight: float) -> float:
-    """Compute total value of a list of items, but return 0 if they weight more
-    than max.
+def total_score(items: Items, max_weight: float) -> float:
+    """Compute total score of a list of items, but return 0 if they weight more
+    than max_weight.
     """
     return (
-        sum([i.value for i in items])
+        sum([i.score for i in items])
         if sum([i.weight for i in items]) <= max_weight
         else 0
     )
@@ -96,7 +109,9 @@ def prio(
     mem: Dict[Tuple[Items, float], Items],
     alts: Dict[str, Tuple[str, ...]],
 ) -> Items:
-    """Actual function for prioritization."""
+    """Actual function for prioritization.
+    It is a Knapsack solver using dynamic programming with memorization.
+    """
     if not items:
         return ()
     if (items, max_weight) not in mem:
@@ -108,7 +123,7 @@ def prio(
         )
         solution = (
             included
-            if tot_value(included, max_weight) > tot_value(excluded, max_weight)
+            if total_score(included, max_weight) > total_score(excluded, max_weight)
             else excluded
         )
         mem[(items, max_weight)] = solution

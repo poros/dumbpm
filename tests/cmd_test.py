@@ -14,34 +14,34 @@ def test_parser_dumbpm() -> None:
 def test_subparser_prioritize() -> None:
     parser = create_parser()
     args = parser.parse_args(
-        ["prioritize", "file/path", "--budget", "10", "--duration-cost-budget"]
+        ["prioritize", "file/path", "--budget", "10", "--cost-per-duration"]
     )
     assert args.filename == "file/path"
     assert args.budget == 10.0
-    assert args.duration_cost_budget is True
+    assert args.cost_per_duration is True
     args = parser.parse_args(["prioritize", "file/path"])
     assert args.filename == "file/path"
     assert args.budget == float("Inf")
-    assert args.duration_cost_budget is False
+    assert args.cost_per_duration is False
     with pytest.raises(SystemExit):
         parser.parse_args(["prioritize"])
 
 
 def test_cmd_prioritize() -> None:
     parser = create_parser()
-    args = parser.parse_args(["prioritize", "tests/prio_no_alt.csv", "--budget", "3"])
+    args = parser.parse_args(["prioritize", "tests/csvs/no_alt.csv", "--budget", "3"])
     assert cmd_prioritize(args) == ["C", "Project B"]
     args = parser.parse_args(
         [
             "prioritize",
-            "tests/prio_no_alt.csv",
+            "tests/csvs/no_alt.csv",
             "--budget",
             "10",
-            "--duration-cost-budget",
+            "--cost-per-duration",
         ]
     )
-    assert cmd_prioritize(args) == ["C", "Project B"]
-    args = parser.parse_args(["prioritize", "tests/prio_no_alt.csv"])
+    assert cmd_prioritize(args) == ["Project A", "Project B"]
+    args = parser.parse_args(["prioritize", "tests/csvs/no_alt.csv"])
     assert cmd_prioritize(args) == ["Project A", "C", "D", "Project B"]
 
 
@@ -51,10 +51,10 @@ def test_main() -> None:
         [
             "dumbpm",
             "prioritize",
-            "tests/prio.csv",
+            "tests/csvs/prio.csv",
             "--budget",
             "3",
-            "--duration-cost-budget",
+            "--cost-per-duration",
         ],
         check=True,
     )

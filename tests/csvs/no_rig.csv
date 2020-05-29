@@ -1,0 +1,5 @@
+Projects,Value,PQs,durations,alternatives
+Project A,1,4,2,"Project B"
+Project B,1,1,1,"Project A, C"
+C,5,2,4,Project B
+D,1,2,6

@@ -8,7 +8,7 @@ A pretty dumb PM.
 
 At the moment it only does projects prioritization: it is pretty dumb, indeed.
 
-The whole philosophy behind `dumbpm` is that PMs (project managers, product managers, people managers, pokemon masters, etc.) all do some tasks that could use some automation, but at the same time this automation should be as dumb as possible. There are so many changing factors that influence such tasks that you better hire a PM (or a team of researchers to do the automation) to do the clever stuff, not a random software on the internet. In addition, if we keep it dumb, people can just read the code and understand what is going on, if they really want to.
+The whole philosophy behind `dumbpm` is that PMs (project managers, program managers,product managers, people managers, pokemon masters, etc.) all do some tasks that could use some automation, but at the same time this automation should be as dumb as possible. There are so many changing factors that influence such tasks that you better hire a PM (or a team of researchers to do the automation) to do the clever stuff, not a random software on the internet. In addition, if we keep it dumb, people can just read the code and understand what is going on, if they really want to.
 
 If you have any suggestions for something (but nothing clever!) that you would like dumbpm to do for you, open an issue and let me know.
 
@@ -16,9 +16,11 @@ If you have any suggestions for something (but nothing clever!) that you would l
 
 Giving a table of projetcs defined as below, it outputs a list of projects in order of priority within the optionally specified budget (prioritization as "data problem").
 
-The prioritized list is modelled as the exact solution of a [Knapsack Problem](https://en.wikipedia.org/wiki/Knapsack_problem) with the following value function: `norm(norm(value) / (norm(cost) * norm(duration) * norm(risk))) + norm(rigging)`. Pretty dumb, indeed.
+The prioritized list is modelled as the exact solution of a [Knapsack Problem](https://en.wikipedia.org/wiki/Knapsack_problem) with the following value function: `norm(norm(value) / norm(norm(cost) + norm(duration) + norm(risk))) + norm(rigging)`. Pretty dumb, indeed.
 
-If budget isn't specified, the list will simply be sorted by the result of the above value function. By default, cost is the only thing counted against the budget, but there is an option to use (cost * duration) instead.
+If `--budget` isn't specified, the list will simply be sorted by the result of the above value function. Budget is relative to the `cost` parameter.
+
+If you are expressing `cost` as cost per unit of duration (e.g. developers per week or sprint), you'll have to specify the `--cost-per-duration` option, so that `total cost = cost * duration` and `budget` is measured against `total cost` (`duration` will also disappear from the value function not to count it twice).
 
 ```bash
 $ dumbpm prioritize --help
@@ -30,27 +32,24 @@ positional arguments:
 optional arguments:
   -h, --help         show this help message and exit
   --budget [BUDGET]  Max budget allowed
-  --duration-cost-budget
-                     Budget is (cost * duration) instead of only cost
+  --cost-per-duration  Cost is to be assumed per unit of duration. Budget =
+                       (cost * duration)
 ```
 
 ### Projects format
 
 Project definition happens in a CSV file with the following structure:
 
-- `Project`: name of the project
-- `Value`: value of the project
-- `Cost`: cost of the project
-- `Duration`: duration of the project expressed in unit of times
-- `Risk`: risk of failure of the project
-- `Rigging`: arbitrary value used to rig the result (yay, cheating!); the highest the more likely the project to be prioritized (keep in mind that this counts for half of the score of a project)
-- `Alternative`: comma separated list of projects that are incompatible with this one (e.g.; make lunch vs buy lunch)
+- `Project`: [required] name of the project
+- `Value`: [required] value of the project
+- `Cost`: [required] cost of the project
+- `Duration`: [optional] duration of the project expressed in unit of times
+- `Risk`: [optional] risk of failure of the project
+- `Rigging`: [optional, empty field = 0] arbitrary value used to rig the result (yay, cheating!); the highest the more likely the project to be prioritized (keep in mind that this counts for half of the score of a project)
+- `Alternatives`: [optional, empty field = empty list] comma separated list of projects that are incompatible with this one (e.g. make lunch vs buy lunch)
 
-Any field which is not specified, will be filled with 0.
+There is a bit of slack on the headers of the columns (e.g. `Project`, `Projects`, `project`, etc. are all alright). Notable mentions: `rig` and `rigging` both work; same for `alts` and `alternatives`; `PQ` can be used instead of `cost` if that's your thing.
 
-There is a bit of slack on the headers of the columns (e.g.; Project, Projects, project, etc. are all alright). Notable mentions: rig and rigging both work; same for alts and alternatives; PQ can be used instead of cost if that's your thing.
-
-Columns `duration`, `risk`, `rigging` and `alternatives` can be entirely omitted.
 
 
 | Project                                             | Value | Cost | Duration | Risk | Rigging | Alternatives                                |

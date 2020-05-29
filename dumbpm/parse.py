@@ -1,4 +1,6 @@
+import collections
 from itertools import chain
+from typing import Counter
 
 from pandas import DataFrame
 from pandas import read_csv
@@ -10,18 +12,52 @@ def parse_input(filename: str) -> DataFrame:
     """Parse csv input file using pandas."""
     csv = read_csv(filename)
     csv.rename(columns=lambda c: c.lower().strip("s"), inplace=True)
+
+    if "project" not in csv:
+        raise ValueError("Projects column must be specified")
+    if csv["project"].isnull().values.any():
+        raise ValueError("All projects must have a name")
+    counts: Counter[str] = collections.Counter(csv["project"])
+    dups = [(i, c) for i, c in counts.items() if c > 1]
+    if dups:
+        raise ValueError(f"Projects names must be unique: {dups}")
+
+    if "value" not in csv:
+        raise ValueError("Value column must be specified")
+    if csv["value"].isnull().values.any():
+        raise ValueError("All projects must have a value")
+
     csv.rename(columns={"pq": "cost"}, inplace=True)
+    if "cost" not in csv:
+        raise ValueError("Cost column must be specified")
+    if csv["cost"].isnull().values.any():
+        raise ValueError("All projects must have a cost")
+
     if "duration" not in csv:
-        csv["duration"] = [1] * len(csv["project"])
+        csv["duration"] = [0] * len(csv["project"])
+    if csv["duration"].isnull().values.any():
+        raise ValueError(
+            "All projects must have a duration, if the Duration column is specified"
+        )
+
     if "risk" not in csv:
-        csv["risk"] = [1] * len(csv["project"])
+        csv["risk"] = [0] * len(csv["project"])
+    if csv["risk"].isnull().values.any():
+        raise ValueError(
+            "All projects must have a risk, if the Risk column is specified"
+        )
+
     csv.rename(columns={"rig": "rigging"}, inplace=True)
     if "rigging" not in csv:
         csv["rigging"] = [0] * len(csv["project"])
+    else:
+        csv.fillna(0, inplace=True)
+
     csv.rename(columns={"alt": "alternative"}, inplace=True)
     if "alternative" not in csv:
         csv["alternative"] = [""] * len(csv["project"])
-    csv["alternative"].fillna("", inplace=True)
+    else:
+        csv["alternative"].fillna("", inplace=True)
     csv["alternative"] = [tuple(a.split(", ")) if a else () for a in csv["alternative"]]
     missing = [
         a
@@ -41,7 +77,8 @@ def parse_input(filename: str) -> DataFrame:
         raise ValueError(
             f"{asym[0]} lists {asym[1]} as alternative, but not the other way around"
         )
-    csv.fillna(0, inplace=True)
+
     if any(filter(lambda x: isinstance(x, float) and x < 0, flatten(csv.values))):
         raise ValueError("Negative values are not allowed")
+
     return csv
