@@ -21,15 +21,15 @@ def compute_score(
 ) -> List[float]:
     """
     Compute the score (used for prioritization) of each item by
-    norm(norm(value) / norm(norm(cost) + norm(duration) + norm(risk))) + norm(rigging)
+    norm(norm(value) / (norm(cost) + norm(duration) + norm(risk))) + norm(rigging)
 
-    Normalization between each operation is necessary because the algorithm makes no
-    assumption about the interval of each parameter.
+    Normalization of parameters is necessary because the algorithm makes no
+    assumption about the interval of each parameter. The additional normalization
+    before summing up rigging and the rest of the equation is so that rigging can
+    have a sizeable influence in the outcome even if normalized.
     """
     numerator = norm(value)
-    denominator = norm(
-        [c + d + r for c, d, r in zip(norm(cost), norm(duration), norm(risk))]
-    )
+    denominator = [c + d + r for c, d, r in zip(norm(cost), norm(duration), norm(risk))]
     if 0 in denominator:
         raise ValueError(
             "At least one project has 0 as combination of cost, duration and risk"
