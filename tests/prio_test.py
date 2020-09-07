@@ -58,17 +58,20 @@ def test_prioritize() -> None:
     rigging = [0.0, 10.0, 0.0, 1.0]
     alternatives: List[Tuple[str, ...]] = [(), (), (), ()]
     max_cost = 20.0
-    assert prioritize(
-        projects,
-        value,
-        cost,
-        duration,
-        risk,
-        rigging,
-        alternatives,
-        max_cost,
-        cost_per_duration=False,
-    ) == ["B", "D"]
+    assert (
+        prioritize(
+            projects,
+            value,
+            cost,
+            duration,
+            risk,
+            rigging,
+            alternatives,
+            max_cost,
+            cost_per_duration=False,
+        )
+        == ["B", "D"]
+    )
 
 
 def test_prioritize_cost_per_duration() -> None:
@@ -118,14 +121,17 @@ def test_prioritize_with_alternatives() -> None:
     rigging = [0.0, 10.0, 0.1, 1.0]
     alternatives: List[Tuple[str, ...]] = [(), ("D",), (), ("B",)]
     max_cost = 20.0
-    assert prioritize(
-        projects,
-        value,
-        cost,
-        duration,
-        risk,
-        rigging,
-        alternatives,
-        max_cost,
-        cost_per_duration=False,
-    ) == ["B", "C"]
+    assert (
+        prioritize(
+            projects,
+            value,
+            cost,
+            duration,
+            risk,
+            rigging,
+            alternatives,
+            max_cost,
+            cost_per_duration=False,
+        )
+        == ["B", "C"]
+    )

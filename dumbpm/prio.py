@@ -86,7 +86,10 @@ def prioritize(
     weight = n_cost
     alts = dict(zip(projects, alternatives))
     solution = prio(
-        tuple(Item(*x) for x in zip(projects, score, weight)), max_cost, {}, alts,
+        tuple(Item(*x) for x in zip(projects, score, weight)),
+        max_cost,
+        {},
+        alts,
     )
     sorted_solution = sorted(solution, key=lambda k: k[1], reverse=True)
     return [s[0] for s in sorted_solution]
