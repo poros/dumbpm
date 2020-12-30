@@ -14,8 +14,6 @@ twine = "*"
 
 [packages]
 pandas = "*"
-# temporary until stable release (CVE-2017-18342) (https://github.com/yaml/pyyaml/issues/193)
-pyyaml = ">=4.2b4"
 
 [requires]
-python_version = "3.7"
+python_version = "3.9"

@@ -13,7 +13,7 @@ setup(
     version="0.4.1",
     classifiers=[
         "Programming Language :: Python :: 3",
-        "Programming Language :: Python :: 3.7",
+        "Programming Language :: Python :: 3.9",
     ],
     install_requires=["pandas"],
     packages=find_packages(exclude=("tests*", "testing*")),
