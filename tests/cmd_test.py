@@ -29,19 +29,21 @@ def test_subparser_prioritize() -> None:
 
 def test_cmd_prioritize() -> None:
     parser = create_parser()
-    args = parser.parse_args(["prioritize", "tests/csvs/no_alt.csv", "--budget", "3"])
+    args = parser.parse_args(
+        ["prioritize", "tests/prio/csvs/no_alt.csv", "--budget", "3"]
+    )
     assert cmd_prioritize(args) == ["C", "Project B"]
     args = parser.parse_args(
         [
             "prioritize",
-            "tests/csvs/no_alt.csv",
+            "tests/prio/csvs/no_alt.csv",
             "--budget",
             "10",
             "--cost-per-duration",
         ]
     )
     assert cmd_prioritize(args) == ["Project A", "Project B"]
-    args = parser.parse_args(["prioritize", "tests/csvs/no_alt.csv"])
+    args = parser.parse_args(["prioritize", "tests/prio/csvs/no_alt.csv"])
     assert cmd_prioritize(args) == ["Project A", "C", "D", "Project B"]
 
 
@@ -51,7 +53,7 @@ def test_main() -> None:
         [
             "dumbpm",
             "prioritize",
-            "tests/csvs/prio.csv",
+            "tests/prio/csvs/prio.csv",
             "--budget",
             "3",
             "--cost-per-duration",

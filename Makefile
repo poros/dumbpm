@@ -24,3 +24,7 @@ dist: venv
 .PHONY: upload-to-pypi
 upload-to-pypi: dist
 	pipenv run twine upload dist/*
+
+.PHONY: pre-commit
+pre-commit: venv
+	pipenv run pre-commit run --all-files
