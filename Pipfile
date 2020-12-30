@@ -13,7 +13,10 @@ ipdb = "*"
 twine = "*"
 
 [packages]
+numpy = "*"
 pandas = "*"
+scipy = "*"
+seaborn = "*"
 
 [requires]
 python_version = "3.9"
