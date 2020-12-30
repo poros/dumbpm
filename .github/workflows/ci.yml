@@ -26,3 +26,6 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           python -m pip install pipenv tox
+
+      - name: Test
+        run: tox
