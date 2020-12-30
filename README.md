@@ -1,6 +1,7 @@
 # dumbpm
 
 [![GitHub version](https://badge.fury.io/gh/poros%2Fdumbpm.svg)](https://badge.fury.io/gh/poros%2Fdumbpm)
+[![Continuous Integration](https://github.com/poros/dumbpm/workflows/Continuous%20Integration/badge.svg)](https://github.com/poros/dumbpm/actions)
 [![Build Status](https://travis-ci.org/poros/dumbpm.svg?branch=master)](https://travis-ci.org/poros/dumbpm)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 
