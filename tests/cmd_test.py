@@ -65,9 +65,20 @@ def test_subparser_estimate() -> None:
 
 def test_cmd_estimate() -> None:
     parser = create_parser()
-    args = parser.parse_args(["estimate", "tests/est/csvs/est.csv", "100"])
+    args = parser.parse_args(
+        ["estimate", "tests/est/csvs/sprints.csv", "100", "--simulations", "10"]
+    )
     assert cmd_estimate(args) == DataFrame()
-    args = parser.parse_args(["estimate", "tests/est/csvs/est.csv", "100", "--normal"])
+    args = parser.parse_args(
+        [
+            "estimate",
+            "tests/est/csvs/sprints.csv",
+            "100",
+            "--normal",
+            "--simulations",
+            "10",
+        ]
+    )
     assert cmd_estimate(args) == DataFrame()
 
 

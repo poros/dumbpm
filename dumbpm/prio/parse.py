@@ -51,7 +51,7 @@ def parse_input(filename: str) -> DataFrame:
     if "rigging" not in csv:
         csv["rigging"] = [0] * len(csv["project"])
     else:
-        csv.fillna(0, inplace=True)
+        csv["rigging"].fillna(0, inplace=True)
 
     csv.rename(columns={"alt": "alternative"}, inplace=True)
     if "alternative" not in csv:
