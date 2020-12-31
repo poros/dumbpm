@@ -1,7 +1,9 @@
 import subprocess
 
 import pytest
+from pandas import DataFrame
 
+from dumbpm.cmd import cmd_estimate
 from dumbpm.cmd import cmd_prioritize
 from dumbpm.cmd import create_parser
 
@@ -47,6 +49,28 @@ def test_cmd_prioritize() -> None:
     assert cmd_prioritize(args) == ["Project A", "C", "D", "Project B"]
 
 
+def test_subparser_estimate() -> None:
+    parser = create_parser()
+    args = parser.parse_args(["estimate", "file/path", "100", "--normal"])
+    assert args.filename == "file/path"
+    assert args.scope == 100
+    assert args.normal is True
+    args = parser.parse_args(["estimate", "file/path", "100"])
+    assert args.filename == "file/path"
+    assert args.scope == 100
+    assert args.normal is False
+    with pytest.raises(SystemExit):
+        parser.parse_args(["estimate", "file/path"])
+
+
+def test_cmd_estimate() -> None:
+    parser = create_parser()
+    args = parser.parse_args(["estimate", "tests/est/csvs/est.csv", "100"])
+    assert cmd_estimate(args) == DataFrame()
+    args = parser.parse_args(["estimate", "tests/est/csvs/est.csv", "100", "--normal"])
+    assert cmd_estimate(args) == DataFrame()
+
+
 def test_main() -> None:
     subprocess.run(["dumbpm"], check=True)
     subprocess.run(
@@ -57,6 +81,16 @@ def test_main() -> None:
             "--budget",
             "3",
             "--cost-per-duration",
+        ],
+        check=True,
+    )
+    subprocess.run(
+        [
+            "dumbpm",
+            "estimate",
+            "tests/est/csvs/sprints.csv",
+            "100",
+            "--normal",
         ],
         check=True,
     )

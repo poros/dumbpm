@@ -1,6 +1,8 @@
 import argparse
 from typing import List
 
+from pandas import DataFrame
+
 from dumbpm import est
 from dumbpm import prio
 
@@ -48,21 +50,22 @@ def create_subparser_prioritize(subparsers: argparse._SubParsersAction) -> None:
     prio_parser.set_defaults(func=cmd_prioritize)
 
 
-def cmd_estimate(args: argparse.Namespace) -> List[int]:
+def cmd_estimate(args: argparse.Namespace) -> DataFrame:
     csv = est.parse_input(args.filename)
     data = est.estimate(
         scope=args.scope,
         velocity=csv["velocity"],
         change=csv["change"],
         normal=args.normal,
+        simulations=args.simulations,
     )
-    print(f"{data}")
+    data.describe(percentiles=[0.5, 0.75, 0.90, 0.99])
     return data
 
 
-def create_subparser_project_estimate(subparsers: argparse._SubParsersAction) -> None:
+def create_subparser_estimate(subparsers: argparse._SubParsersAction) -> None:
     est_parser = subparsers.add_parser(
-        "prioritize",
+        "estimate",
         help="""Estimate projects duration in a reasonably dumb way.
         See README for more info.""",
     )
@@ -80,6 +83,14 @@ def create_subparser_project_estimate(subparsers: argparse._SubParsersAction) ->
         help="Use a normal distribution for the input data",
     )
 
+    est_parser.add_argument(
+        "--simulations",
+        type=int,
+        nargs="?",
+        default=100000,
+        help="Number of simulations to run",
+    )
+
     est_parser.set_defaults(func=cmd_estimate)
 
 
@@ -88,7 +99,7 @@ def create_parser() -> argparse.ArgumentParser:
     parser.set_defaults(func=None)
     subparsers = parser.add_subparsers(title="subcommands")
     create_subparser_prioritize(subparsers)
-    # create_subparser_project_estimate(subparsers)
+    create_subparser_estimate(subparsers)
     return parser
 
 

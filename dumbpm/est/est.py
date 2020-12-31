@@ -1,11 +1,14 @@
 from typing import List
 
+from pandas import DataFrame
+
 
 def estimate(
     scope: int,
     velocity: List[float],
     change: List[float],
     normal: bool,
-) -> List[int]:
+    simulations: int,
+) -> DataFrame:
     """Estimate."""
-    return [0, 0, 0]
+    return DataFrame()
