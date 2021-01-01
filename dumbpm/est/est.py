@@ -1,22 +1,23 @@
 import math
+from typing import Callable
 from typing import List
 from typing import Optional
+from typing import Tuple
 
 from numpy.random import default_rng
 from pandas import DataFrame
+from scipy.stats import norm
 
 
-def compute_sprints(
+def compute_duration(
     scope: int,
     velocity: List[float],
     change: List[float],
-    max_sprints: int,
 ) -> int:
     """Given the simulated velocity and scope change per sprint, compute how many
     sprints are necessary to finish the project.
-    To protect the simulation from infinite projects (where scope change is higher than
-    velocity), a maximum number of sprints is provided.
     """
+    max_sprints = len(velocity)
     delta = 0.0
     for n in range(max_sprints):
         delta += velocity[n] - change[n]
@@ -26,6 +27,7 @@ def compute_sprints(
 
 
 def compute_stats(duration: List[int]) -> DataFrame:
+    """Statistics to visualize for the result of the simulation."""
     return DataFrame(duration, columns=["Duration"]).describe(
         percentiles=[0.5, 0.75, 0.90, 0.99]
     )
@@ -50,6 +52,36 @@ def compute_max_sprints(scope: int, velocity: List[float], change: List[float]) 
     return math.ceil(scope / (min_velocity - max_change))
 
 
+def generate_sprints_simulator(
+    velocity: List[float],
+    change: List[float],
+    max_sprints: int,
+    normal: bool,
+    random_seed: Optional[int],
+) -> Callable[[], Tuple[List[float], List[float]]]:
+    """Simulate the velocity and the scope change for the sprints in the simulation."""
+    rng = default_rng(random_seed)
+    if normal:
+        velocity_mean, velocity_stdev = norm.fit(velocity)
+        velocity_norm = norm(loc=velocity_mean, scale=velocity_stdev)
+        change_mean, change_stdev = norm.fit(change)
+        change_norm = norm(loc=change_mean, scale=change_stdev)
+
+        def generate_sprints() -> Tuple[List[float], List[float]]:
+            rn_velocity = velocity_norm.rvs(max_sprints, random_state=rng)
+            rn_change = change_norm.rvs(max_sprints, random_state=rng)
+            return rn_velocity, rn_change
+
+    else:
+
+        def generate_sprints() -> Tuple[List[float], List[float]]:
+            rn_velocity = rng.choice(velocity, max_sprints)
+            rn_change = rng.choice(change, max_sprints)
+            return rn_velocity, rn_change
+
+    return generate_sprints
+
+
 def estimate(
     scope: int,
     velocity: List[float],
@@ -70,20 +102,22 @@ def estimate(
     In order to make test reproducible, an optional parameter `random_state` has been
     introduced.
     """
-    rng = default_rng(random_seed)
-    max_sprints = compute_max_sprints(scope=scope, velocity=velocity, change=change)
     duration = []
+    max_sprints = compute_max_sprints(scope=scope, velocity=velocity, change=change)
+    simulate_sprints = generate_sprints_simulator(
+        velocity=velocity,
+        change=change,
+        max_sprints=max_sprints,
+        normal=normal,
+        random_seed=random_seed,
+    )
     for i in range(simulations):
-        rn_velocity = rng.choice(velocity, max_sprints)
-        rn_change = rng.choice(change, max_sprints)
-        # print(rn_velocity)
-        # print(rn_change)
+        rn_velocity, rn_change = simulate_sprints()
         duration.append(
-            compute_sprints(
+            compute_duration(
                 scope=scope,
                 velocity=rn_velocity,
                 change=rn_change,
-                max_sprints=max_sprints,
             )
         )
     print(duration)

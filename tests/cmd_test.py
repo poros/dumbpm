@@ -83,7 +83,7 @@ def test_cmd_estimate() -> None:
         ]
     )
     actual = cmd_estimate(args, random_seed=1234)
-    expected = est.compute_stats([6, 7, 8, 8, 8, 7, 9, 8, 6, 7])
+    expected = est.compute_stats([8, 7, 7, 8, 8, 7, 8, 7, 7, 7])
     pandas.testing.assert_frame_equal(expected, actual)
 
 
@@ -107,6 +107,8 @@ def test_main() -> None:
             "tests/est/csvs/sprints.csv",
             "100",
             "--normal",
+            "--simulations",
+            "10000",
         ],
         check=True,
     )
