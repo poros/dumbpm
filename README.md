@@ -177,25 +177,27 @@ Velocity,Change
 14,2
 18,-4
 
-$ dumbpm estimate sprints.csv 348
-count 100000
-mean      20
-std	       1
-min	       1
-50%	       1
-75%	       1
-90%        1
-99%        1
-max	       1
+$ dumbpm estimate sprints.csv 100
+            Duration
+count  100000.000000
+mean        7.761430
+std         0.993793
+min         5.000000
+50%         8.000000
+75%         8.000000
+90%         9.000000
+99%        10.000000
+max        12.000000
 
-$ dumbpm prioritize projects.csv --normal
-count 100000
-mean      20
-std	       1
-min	       1
-50%	       1
-75%	       1
-90%        1
-99%        1
-max	       1
+$ dumbpm prioritize projects.csv 100 --normal
+            Duration
+count  100000.000000
+mean        7.800160
+std         0.999027
+min         5.000000
+50%         8.000000
+75%         8.000000
+90%         9.000000
+99%        10.000000
+max        13.000000
 ```
