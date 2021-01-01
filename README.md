@@ -4,14 +4,13 @@
 [![Continuous Integration](https://github.com/poros/dumbpm/workflows/Continuous%20Integration/badge.svg)](https://github.com/poros/dumbpm/actions)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 
-- [dumbpm](#dumbpm)
-  * [Installation](#installation)
-  * [Prioritize projects](#prioritize-projects)
-    + [Projects format](#projects-format)
-    + [Example](#example)
-  * [Estimate project duration](#estimate-project-duration)
-    + [Input format](#input-format)
-    + [Example](#example-1)
+* [Installation](#installation)
+* [Prioritize projects](#prioritize-projects)
+  + [Projects format](#projects-format)
+  + [Example](#example)
+* [Estimate project duration](#estimate-project-duration)
+  + [Input format](#input-format)
+  + [Example](#example-1)
 
 A pretty dumb PM.
 
