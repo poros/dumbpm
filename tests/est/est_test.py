@@ -3,134 +3,89 @@
 #
 # import numpy as np
 # import pytest
-# from dumbpm.prio.prio import combine_cost_and_duration
-# from dumbpm.prio.prio import compute_score
-# from dumbpm.prio.prio import Item
-# from dumbpm.prio.prio import norm
-# from dumbpm.prio.prio import prioritize
-# from dumbpm.prio.prio import total_score
-#
-#
-# def test_norm() -> None:
-#    assert norm([5, 6, 1, 2, 4, 10]) == [0.5, 0.6, 0.1, 0.2, 0.4, 1]
-#
-#
-# def test_combine_score_and_duration() -> None:
-#    cost = [0.5, 1.0]
-#    duration = [1, 0.2]
-#    assert combine_cost_and_duration(cost, duration) == ([0.5, 0.2], [0.0, 0.0])
-#
-#
-# def test_compute_score() -> None:
-#    value = [10.0, 20.0]
-#    cost = [20.0, 10.0]
-#    duration = [20.0, 10.0]
-#    risk = [3.0, 6.0]
-#    rigging = [1.0, 5.0]
-#
+import pandas.testing
+
+from dumbpm.est.est import compute_max_sprints
+from dumbpm.est.est import compute_sprints
+from dumbpm.est.est import compute_stats
+from dumbpm.est.est import estimate
+
+
+def test_compute_max_sprints() -> None:
+    assert compute_max_sprints(scope=10, velocity=[6.0, 5.0], change=[1.0, 2.0]) == 4
+
+
+def test_compute_max_sprints_max() -> None:
+    assert compute_max_sprints(scope=10, velocity=[5.0, 1.0], change=[3.0, 1.0]) == 2000
+
+
+def test_compute_sprints() -> None:
+    velocity = [1.0, 5.0, 5.0, 6.0, 8.0, 1.0]
+    change = [1.0, -1.0, 2.0, 1.0, 1.0, 1.0]
+    assert (
+        compute_sprints(scope=10, velocity=velocity, change=change, max_sprints=6) == 4
+    )
+
+
+def test_compute_sprints_max_sprints() -> None:
+    velocity = [1.0, 5.0, 5.0, 6.0, 8.0, 1.0]
+    change = [1.0, -1.0, 5.0, 10.0, 10.0, 11.0]
+    assert (
+        compute_sprints(scope=10, velocity=velocity, change=change, max_sprints=6) == 6
+    )
+
+
+def test_compute_sprints_no_change() -> None:
+    velocity = [1.0, 5.0, 5.0, 6.0, 8.0, 1.0]
+    change = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+    assert (
+        compute_sprints(scope=10, velocity=velocity, change=change, max_sprints=6) == 3
+    )
+
+
+def test_estimate() -> None:
+    actual = estimate(
+        scope=100,
+        velocity=[5.0, 6.0, 10.0],
+        change=[1.0, 2.0, 3.0],
+        normal=False,
+        simulations=10,
+        random_seed=1234,
+    )
+    print(actual)
+    expected = compute_stats([19, 19, 24, 21, 16, 23, 19, 22, 16, 21])
+    pandas.testing.assert_frame_equal(expected, actual)
+
+
+def test_estimate_normal() -> None:
+    actual = estimate(
+        scope=100,
+        velocity=[5.0, 6.0, 10.0],
+        change=[1.0, 2.0, 3.0],
+        normal=True,
+        simulations=10,
+        random_seed=1234,
+    )
+    expected = compute_stats([19, 19, 24, 21, 16, 23, 19, 22, 16, 21])
+    pandas.testing.assert_frame_equal(expected, actual)
+
+
+def test_estimate_no_changes() -> None:
+    actual = estimate(
+        scope=100,
+        velocity=[5.0, 6.0, 10.0],
+        change=[0, 0, 0],
+        normal=False,
+        simulations=10,
+        random_seed=1234,
+    )
+    expected = compute_stats([15, 16, 13, 14, 16, 17, 14, 16, 13, 14])
+    pandas.testing.assert_frame_equal(expected, actual)
+
+
 #    np.testing.assert_array_almost_equal(
 #        compute_score(value, cost, duration, risk, rigging), [0.6, 2.0]
 #    )
 #
-#
-# def test_compute_score_div_by_zero() -> None:
-#    value = [10.0, 20.0]
-#    cost = [20.0, 0.0]
-#    duration = [20.0, 0.0]
-#    risk = [3.0, 0.0]
-#    rigging = [1.0, 5.0]
 #    with pytest.raises(ValueError):
 #        compute_score(value, cost, duration, risk, rigging)
-#
-#
-# def test_total_score() -> None:
-#    assert total_score((Item("A", 1, 1), Item("B", 2, 1), Item("C", 3, 1)), 3) == 6.0
-#    assert total_score((Item("A", 1, 1), Item("B", 2, 1), Item("C", 3, 1)), 2) == 0.0
-#
-#
-# def test_prioritize() -> None:
-#    projects = ["A", "B", "C", "D"]
-#    value = [10.0, 10.0, 10.0, 10.0]
-#    cost = [10.0, 10.0, 10.0, 10.0]
-#    duration = [10.0, 10.0, 10.0, 10.0]
-#    risk = [3.0, 3.0, 3.0, 3.0]
-#    rigging = [0.0, 10.0, 0.0, 1.0]
-#    alternatives: List[Tuple[str, ...]] = [(), (), (), ()]
-#    max_cost = 20.0
-#    assert (
-#        prioritize(
-#            projects,
-#            value,
-#            cost,
-#            duration,
-#            risk,
-#            rigging,
-#            alternatives,
-#            max_cost,
-#            cost_per_duration=False,
-#        )
-#        == ["B", "D"]
-#    )
-#
-#
-# def test_prioritize_cost_per_duration() -> None:
-#    projects = ["A", "B", "C", "D"]
-#    value = [100.0, 20.0, 100.0, 10.0]
-#    cost = [10.0, 10.0, 10.0, 10.0]
-#    duration = [10.0, 10.0, 50.0, 10.0]
-#    multiplied_cost = [100.0, 100.0, 500.0, 100.0]
-#    unit_duration = [1.0, 1.0, 1.0, 1.0]
-#    risk = [3.0, 3.0, 3.0, 3.0]
-#    rigging = [0.0, 0.0, 0.0, 0.0]
-#    alternatives: List[Tuple[str, ...]] = [(), (), (), ()]
-#    max_cost = 200.0
-#    assert (
-#        prioritize(
-#            projects,
-#            value,
-#            cost,
-#            duration,
-#            risk,
-#            rigging,
-#            alternatives,
-#            max_cost,
-#            cost_per_duration=True,
-#        )
-#        == prioritize(
-#            projects,
-#            value,
-#            multiplied_cost,
-#            unit_duration,
-#            risk,
-#            rigging,
-#            alternatives,
-#            max_cost,
-#            cost_per_duration=False,
-#        )
-#        == ["A", "B"]
-#    )
-#
-#
-# def test_prioritize_with_alternatives() -> None:
-#    projects = ["A", "B", "C", "D"]
-#    value = [10.0, 10.0, 10.0, 10.0]
-#    cost = [10.0, 10.0, 10.0, 10.0]
-#    duration = [10.0, 10.0, 10.0, 10.0]
-#    risk = [3.0, 3.0, 3.0, 3.0]
-#    rigging = [0.0, 10.0, 0.1, 1.0]
-#    alternatives: List[Tuple[str, ...]] = [(), ("D",), (), ("B",)]
-#    max_cost = 20.0
-#    assert (
-#        prioritize(
-#            projects,
-#            value,
-#            cost,
-#            duration,
-#            risk,
-#            rigging,
-#            alternatives,
-#            max_cost,
-#            cost_per_duration=False,
-#        )
-#        == ["B", "C"]
-#    )

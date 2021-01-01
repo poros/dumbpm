@@ -1,5 +1,6 @@
 import argparse
 from typing import List
+from typing import Optional
 
 from pandas import DataFrame
 
@@ -50,7 +51,9 @@ def create_subparser_prioritize(subparsers: argparse._SubParsersAction) -> None:
     prio_parser.set_defaults(func=cmd_prioritize)
 
 
-def cmd_estimate(args: argparse.Namespace) -> DataFrame:
+def cmd_estimate(
+    args: argparse.Namespace, random_seed: Optional[int] = None
+) -> DataFrame:
     csv = est.parse_input(args.filename)
     data = est.estimate(
         scope=args.scope,
@@ -58,8 +61,9 @@ def cmd_estimate(args: argparse.Namespace) -> DataFrame:
         change=csv["change"],
         normal=args.normal,
         simulations=args.simulations,
+        random_seed=random_seed,
     )
-    data.describe(percentiles=[0.5, 0.75, 0.90, 0.99])
+    print(f"{data}")
     return data
 
 

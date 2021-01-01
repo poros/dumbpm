@@ -1,11 +1,12 @@
 import subprocess
 
+import pandas.testing
 import pytest
-from pandas import DataFrame
 
 from dumbpm.cmd import cmd_estimate
 from dumbpm.cmd import cmd_prioritize
 from dumbpm.cmd import create_parser
+from dumbpm.est import est
 
 
 def test_parser_dumbpm() -> None:
@@ -68,7 +69,9 @@ def test_cmd_estimate() -> None:
     args = parser.parse_args(
         ["estimate", "tests/est/csvs/sprints.csv", "100", "--simulations", "10"]
     )
-    assert cmd_estimate(args) == DataFrame()
+    actual = cmd_estimate(args, random_seed=1234)
+    expected = est.compute_stats([6, 7, 8, 8, 8, 7, 9, 8, 6, 7])
+    pandas.testing.assert_frame_equal(expected, actual)
     args = parser.parse_args(
         [
             "estimate",
@@ -79,7 +82,9 @@ def test_cmd_estimate() -> None:
             "10",
         ]
     )
-    assert cmd_estimate(args) == DataFrame()
+    actual = cmd_estimate(args, random_seed=1234)
+    expected = est.compute_stats([6, 7, 8, 8, 8, 7, 9, 8, 6, 7])
+    pandas.testing.assert_frame_equal(expected, actual)
 
 
 def test_main() -> None:
