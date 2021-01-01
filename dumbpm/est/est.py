@@ -120,5 +120,4 @@ def estimate(
                 change=rn_change,
             )
         )
-    print(duration)
     return compute_stats(duration)
