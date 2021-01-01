@@ -12,9 +12,17 @@ The whole philosophy behind `dumbpm` is that PMs (project managers, program mana
 
 If you have any suggestions for something (but nothing clever!) that you would like `dumbpm` to do for you, open an issue and let me know.
 
-## Prioritization
+## Installation
 
-Giving a table of projetcs defined as below, it outputs a list of projects in order of priority within the optionally specified budget (prioritization as "data problem").
+```
+pip install dumbpm
+```
+
+Tested on both Linux and Mac OS. Windows _might_ work.
+
+## Prioritize projects
+
+Giving a table of projects defined as below, it outputs a list of projects in order of priority within the optionally specified budget (prioritization as "data problem").
 
 The prioritized list is modelled as the exact solution of a [Knapsack Problem](https://en.wikipedia.org/wiki/Knapsack_problem) with the following value function: `norm(norm(value) / (norm(cost) + norm(duration) + norm(risk))) + norm(rigging)`. Pretty dumb, indeed.
 
@@ -51,7 +59,6 @@ Project definition happens in a CSV file with the following structure:
 There is a bit of slack on the headers of the columns (e.g. `Project`, `Projects`, `project`, etc. are all alright). Notable mentions: `rig` and `rigging` both work; same for `alts` and `alternatives`; `PQ` can be used instead of `cost` if that's your thing.
 
 
-
 | Project                                             | Value | Cost | Duration | Risk | Rigging | Alternatives                                |
 |-----------------------------------------------------|-------|------|----------|------|---------|---------------------------------------------|
 | Buy a better espresso machine                       | 5     | 4    | 2        |1     | 9       |                                             |
@@ -65,7 +72,6 @@ There is a bit of slack on the headers of the columns (e.g. `Project`, `Projects
 | Buy beds for powernaps                              | 1     | 3    | 1        |1     |         |                                             |
 | Import treats from France                           | 2     | 4    | 2        |2     |         |                                             |
 | Build in-house roasting notification system         | 3     | 5    | 6        |5     |         | Buy smart component for roaster             |
-
 
 
 ### Example
@@ -102,4 +108,96 @@ $ dumbpm prioritize projects.csv --budget 10
 02 Buy a more modern sign
 03 Find and remove source of bad smell
 04 Buy a better espresso machine
+```
+
+## Estimate project duration
+
+Giving a list of past sprint velocities and (optionally) a list of scope changes for the project in story points defined as below, it outputs an estimate of the project duration in the form of a probability distribution (median, variance, percentiles). You can use these numbers to formulate guesstimates like "I am 75% confident that we will complete the project in 38 weeks".
+
+Please note that the estimate is measured in sprints, so you'll have to multiply that for the duration of your sprint and project that on your working calendar to account for holidays and anything else which could affect your schedule.
+
+To estimation is based on a [Monte Carlo simulation](https://en.wikipedia.org/wiki/Monte_Carlo_method) of the following inequation: `scope + sum(scope_change, over=sprints) <= sum(velocity, over=sprints)`. Pretty dumb, indeed.
+
+By default, velocity and scope change for each iteration are picked at random following a uniform probability distribution from the provided historical data. If `--normal` is specified, the input will be modelled as normal distribution from which velocity and scope changes will be derived.
+
+If it is taking too long to perform the estimation on your computer, set `--simulations` to something lower than `100000`.
+
+```bash
+$ dumbpm estimate --help
+usage: dumbpm estimate [-h] [--normal] [--simulations [SIMULATIONS]] filename scope
+
+positional arguments:
+  filename              CSV file with velocity and scope change datapoints
+  scope                 Remaining scope in story points for the project
+
+optional arguments:
+  -h, --help            show this help message and exit
+  --normal              Use a normal distribution for the input data
+  --simulations [SIMULATIONS]
+                        Number of simulations to run
+```
+
+### Input format
+
+Historical data has to be defined in a CSV file with the following structure:
+
+- `Velocity`: [required] velocity for each past sprint
+- `Change`: [optional] project scope change for each past sprint (zero and negative values are allowed)
+
+
+| Velocity | Change |
+|----------|--------|
+| 17       | 5      |
+| 19       | 1      |
+| 10       | 0      |
+| 12       | 0      |
+| 21       | 1      |
+|  7       | -3     |
+| 15       | -2     |
+| 12       | 5      |
+| 12       | 0      |
+| 14       | 2      |
+| 18       | -4     |
+
+
+### Example
+
+```text
+$ cat sprints.csv
+Velocity,Change
+17,5
+19,1
+10,0
+12,0
+21,1
+7,-3
+15,-2
+12,5
+12,0
+14,2
+18,-4
+
+$ dumbpm estimate sprints.csv 100
+            Duration
+count  100000.000000
+mean        7.761430
+std         0.993793
+min         5.000000
+50%         8.000000
+75%         8.000000
+90%         9.000000
+99%        10.000000
+max        12.000000
+
+$ dumbpm prioritize projects.csv 100 --normal
+            Duration
+count  100000.000000
+mean        7.800160
+std         0.999027
+min         5.000000
+50%         8.000000
+75%         8.000000
+90%         9.000000
+99%        10.000000
+max        13.000000
 ```

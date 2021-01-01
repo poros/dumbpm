@@ -1,55 +1,55 @@
 import pytest
 
-from dumbpm.parse import parse_input
+from dumbpm.prio.parse import parse_input
 
 
 def test_parse_input_not_found() -> None:
     with pytest.raises(FileNotFoundError):
-        parse_input("tests/csvs/mamma.csv")
+        parse_input("tests/prio/csvs/mamma.csv")
 
 
 def test_parse_input_negative() -> None:
     with pytest.raises(ValueError):
-        parse_input("tests/csvs/negative.csv")
+        parse_input("tests/prio/csvs/negative.csv")
 
 
 def test_parse_missing_projects() -> None:
     with pytest.raises(ValueError):
-        parse_input("tests/csvs/no_proj.csv")
+        parse_input("tests/prio/csvs/no_proj.csv")
 
 
 def test_parse_duplicate_projects() -> None:
     with pytest.raises(ValueError):
-        parse_input("tests/csvs/duplicate_proj.csv")
+        parse_input("tests/prio/csvs/duplicate_proj.csv")
 
 
 def test_parse_missing_value() -> None:
     with pytest.raises(ValueError):
-        parse_input("tests/csvs/no_value.csv")
+        parse_input("tests/prio/csvs/no_value.csv")
 
 
 def test_parse_missing_cost() -> None:
     with pytest.raises(ValueError):
-        parse_input("tests/csvs/no_cost.csv")
+        parse_input("tests/prio/csvs/no_cost.csv")
 
 
 def test_parse_missing_one_project() -> None:
     with pytest.raises(ValueError):
-        parse_input("tests/csvs/missing_one_proj.csv")
+        parse_input("tests/prio/csvs/missing_one_proj.csv")
 
 
 def test_parse_missing_one_value() -> None:
     with pytest.raises(ValueError):
-        parse_input("tests/csvs/missing_one_value.csv")
+        parse_input("tests/prio/csvs/missing_one_value.csv")
 
 
 def test_parse_missing_one_cost() -> None:
     with pytest.raises(ValueError):
-        parse_input("tests/csvs/missing_one_cost.csv")
+        parse_input("tests/prio/csvs/missing_one_cost.csv")
 
 
 def test_parse_no_duration() -> None:
-    csv = parse_input("tests/csvs/no_dur.csv")
+    csv = parse_input("tests/prio/csvs/no_dur.csv")
     assert not csv.isnull().values.any()
     assert set(csv.columns) == {
         "project",
@@ -65,11 +65,11 @@ def test_parse_no_duration() -> None:
 
 def test_parse_missing_one_duration() -> None:
     with pytest.raises(ValueError):
-        parse_input("tests/csvs/missing_one_dur.csv")
+        parse_input("tests/prio/csvs/missing_one_dur.csv")
 
 
 def test_parse_no_risk() -> None:
-    csv = parse_input("tests/csvs/no_risk.csv")
+    csv = parse_input("tests/prio/csvs/no_risk.csv")
     assert not csv.isnull().values.any()
     assert set(csv.columns) == {
         "project",
@@ -85,11 +85,11 @@ def test_parse_no_risk() -> None:
 
 def test_parse_missing_one_risk() -> None:
     with pytest.raises(ValueError):
-        parse_input("tests/csvs/missing_one_risk.csv")
+        parse_input("tests/prio/csvs/missing_one_risk.csv")
 
 
 def test_parse_no_rigging() -> None:
-    csv = parse_input("tests/csvs/no_rig.csv")
+    csv = parse_input("tests/prio/csvs/no_rig.csv")
     assert not csv.isnull().values.any()
     assert set(csv.columns) == {
         "project",
@@ -104,7 +104,7 @@ def test_parse_no_rigging() -> None:
 
 
 def test_parse_missing_one_rigging() -> None:
-    csv = parse_input("tests/csvs/missing_one_rig.csv")
+    csv = parse_input("tests/prio/csvs/missing_one_rig.csv")
     assert not csv.isnull().values.any()
     assert set(csv.columns) == {
         "project",
@@ -119,7 +119,7 @@ def test_parse_missing_one_rigging() -> None:
 
 
 def test_parse_no_alternatives() -> None:
-    csv = parse_input("tests/csvs/no_alt.csv")
+    csv = parse_input("tests/prio/csvs/no_alt.csv")
     assert not csv.isnull().values.any()
     assert set(csv.columns) == {
         "project",
@@ -134,7 +134,7 @@ def test_parse_no_alternatives() -> None:
 
 
 def test_parse_missing_one_alternative() -> None:
-    csv = parse_input("tests/csvs/missing_one_alt.csv")
+    csv = parse_input("tests/prio/csvs/missing_one_alt.csv")
     assert not csv.isnull().values.any()
     assert set(csv.columns) == {
         "project",
@@ -150,16 +150,16 @@ def test_parse_missing_one_alternative() -> None:
 
 def test_parse_wrong_alternatives() -> None:
     with pytest.raises(ValueError):
-        parse_input("tests/csvs/wrong_alt.csv")
+        parse_input("tests/prio/csvs/wrong_alt.csv")
 
 
 def test_parse_asymmetrical_alternatives() -> None:
     with pytest.raises(ValueError):
-        parse_input("tests/csvs/asym_alt.csv")
+        parse_input("tests/prio/csvs/asym_alt.csv")
 
 
 def test_parse_input() -> None:
-    csv = parse_input("tests/csvs/prio.csv")
+    csv = parse_input("tests/prio/csvs/prio.csv")
     assert not csv.isnull().values.any()
     assert set(csv.columns) == {
         "project",

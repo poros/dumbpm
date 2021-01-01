@@ -4,12 +4,12 @@ from typing import Tuple
 import numpy as np
 import pytest
 
-from dumbpm.prio import combine_cost_and_duration
-from dumbpm.prio import compute_score
-from dumbpm.prio import Item
-from dumbpm.prio import norm
-from dumbpm.prio import prioritize
-from dumbpm.prio import total_score
+from dumbpm.prio.prio import combine_cost_and_duration
+from dumbpm.prio.prio import compute_score
+from dumbpm.prio.prio import Item
+from dumbpm.prio.prio import norm
+from dumbpm.prio.prio import prioritize
+from dumbpm.prio.prio import total_score
 
 
 def test_norm() -> None:
