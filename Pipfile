@@ -16,7 +16,6 @@ twine = "*"
 numpy = "*"
 pandas = "*"
 scipy = "*"
-seaborn = "*"
 
 [requires]
 python_version = "3.9"
