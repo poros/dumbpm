@@ -60,7 +60,7 @@ def test_estimate_normal() -> None:
         simulations=10,
         random_seed=1234,
     )
-    expected = compute_stats([22, 19, 17, 24, 19, 20, 22, 19, 19, 18])
+    expected = compute_stats([21, 18, 17, 22, 19, 20, 23, 18, 19, 18])
     pandas.testing.assert_frame_equal(expected, actual)
 
 
@@ -86,5 +86,5 @@ def test_estimate_normal_no_changes() -> None:
         simulations=10,
         random_seed=1234,
     )
-    expected = compute_stats([14, 15, 15, 13, 12, 13, 15, 14, 15, 14])
+    expected = compute_stats([14, 14, 15, 13, 12, 13, 15, 14, 15, 13])
     pandas.testing.assert_frame_equal(expected, actual)

@@ -68,8 +68,8 @@ def generate_sprints_simulator(
         change_norm = norm(loc=change_mean, scale=change_stdev)
 
         def generate_sprints() -> Tuple[List[float], List[float]]:
-            rn_velocity = velocity_norm.rvs(max_sprints, random_state=rng)
-            rn_change = change_norm.rvs(max_sprints, random_state=rng)
+            rn_velocity = velocity_norm.rvs(max_sprints, random_state=rng).round(0)
+            rn_change = change_norm.rvs(max_sprints, random_state=rng).round(0)
             return rn_velocity, rn_change
 
     else:
