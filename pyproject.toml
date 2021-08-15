@@ -1,0 +1,35 @@
+[tool.poetry]
+name = "dumbpm"
+version = "0.6.1"
+classifiers=[
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+]
+description = "A pretty dumb PM."
+authors = ["Antonio Uccio Verardi <antonio.uccio.verardi@gmail.com>"]
+license = "Apache-2.0"
+readme = "README.md"
+repository = "https://github.com/poros/dumbpm"
+keywords = ["project management", "agile", "estimate", "PM"]
+
+[tool.poetry.scripts]
+dumbpm='dumbpm.cmd:main'
+
+[build-system]
+requires = ["poetry_core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry.dependencies]
+python = "^3.9"
+numpy = "*"
+pandas = "*"
+scipy = "*"
+
+[tool.poetry.dev-dependencies]
+coverage = "*"
+pytest = "*"
+pre-commit = "^2"
+mypy = "*"
+ipython = "*"
+ipdb = "*"
+twine = "*"

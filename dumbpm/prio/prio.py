@@ -100,9 +100,7 @@ def total_score(items: Items, max_weight: float) -> float:
     than max_weight.
     """
     return (
-        sum([i.score for i in items])
-        if sum([i.weight for i in items]) <= max_weight
-        else 0
+        sum(i.score for i in items) if sum(i.weight for i in items) <= max_weight else 0
     )
 
 

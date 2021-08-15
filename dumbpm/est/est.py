@@ -75,8 +75,8 @@ def generate_sprints_simulator(
     else:
 
         def generate_sprints() -> Tuple[List[float], List[float]]:
-            rn_velocity = rng.choice(velocity, max_sprints)
-            rn_change = rng.choice(change, max_sprints)
+            rn_velocity = rng.choice(velocity, max_sprints).tolist()
+            rn_change = rng.choice(change, max_sprints).tolist()
             return rn_velocity, rn_change
 
     return generate_sprints

@@ -1,9 +1,9 @@
 .PHONY: minimal
-minimal: venv
+minimal: install
 
-venv: Pipfile Pipfile.lock
-	pipenv install --dev
-	pipenv run pre-commit install -f --install-hooks
+install: pyproject.toml poetry.lock
+	poetry install
+	poetry run pre-commit install -f --install-hooks
 
 .PHONY: test
 test:
@@ -14,17 +14,16 @@ clean:
 	find . -name '*.pyc' -delete
 	find . -name '__pycache__' -delete
 	rm -rf .tox
-	rm -rf venv
 	rm -rf dist
 
 .PHONY: dist
 dist: venv
-	pipenv run python setup.py sdist bdist_wheel
+	poetry build
 
 .PHONY: upload-to-pypi
 upload-to-pypi: dist
-	pipenv run twine upload dist/*
+	poetry run twine upload dist/*
 
 .PHONY: pre-commit
-pre-commit: venv
-	pipenv run pre-commit run --all-files
+pre-commit: install
+	poetry run pre-commit run --all-files

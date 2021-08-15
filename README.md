@@ -118,7 +118,11 @@ $ dumbpm prioritize projects.csv --budget 10
 04 Buy a better espresso machine
 ```
 
-## Estimate project duration
+## Estimate project duration without historical data
+
+COMING SOON!
+
+## Estimate project duration based on historical data
 
 Giving a list of past sprint velocities and (optionally) a list of scope changes for the project in story points defined as below, it outputs an estimate of the project duration in the form of a probability distribution (median, variance, percentiles). You can use these numbers to formulate guesstimates like "I am 75% confident that we will complete the project in 38 weeks".
 
