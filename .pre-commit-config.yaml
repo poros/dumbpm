@@ -36,4 +36,5 @@ repos:
     rev: v0.910
     hooks:
     - id: mypy
+      additional_dependencies: [numpy==1.21.1]  # update together with version in lock file https://github.com/pre-commit/mirrors-mypy/issues/11
       args: [--strict]

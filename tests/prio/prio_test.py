@@ -29,7 +29,7 @@ def test_compute_score() -> None:
     risk = [3.0, 6.0]
     rigging = [1.0, 5.0]
 
-    np.testing.assert_allclose(
+    np.testing.assert_allclose(  # type: ignore
         compute_score(value, cost, duration, risk, rigging), [0.6, 2.0]
     )
 
