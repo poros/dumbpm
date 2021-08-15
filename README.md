@@ -120,7 +120,70 @@ $ dumbpm prioritize projects.csv --budget 10
 
 ## Estimate project duration without historical data
 
-COMING SOON!
+Giving a list of tasks or milestones the project can be broken into and (best case, expected, worst case) estimates for the duration of such tasks, it outputs an estimate of the project duration in the form of a probability distribution (median, variance, percentiles). You can use these numbers to formulate guesstimates like "I am 75% confident that we will complete the project in 38 weeks". Instead of using a unit of time (e.g. days, weeks), you can instead specify story points for each tasks and so estimate the project size in story point instead of its duration.
+
+The estimation is based on a [Monte Carlo simulation](https://en.wikipedia.org/wiki/Monte_Carlo_method) of the following equation: `project_duration = sum(duration, over=tasks)`. Tasks duration for each iteration are derived from the [PERT distribution](https://en.wikipedia.org/wiki/PERT_distribution) interpolating the (best case, expected, worst case) estimates for the task. Pretty dumb, indeed.
+
+The command is called `guesstimate` to highlight that the result of this method should be considered with lower confidence than the one produced by the `estimate` command, which is based on historical data. You can switch to `estimate` after you conclude a few sprints, while relying on `guesstimate` for the initial estimates during the planning period.
+
+If it is taking too long to perform the estimation on your computer, set `--simulations` to something lower than `100000`.
+
+```bash
+$ dumbpm guesstimate --help
+usage: dumbpm guesstimate [-h] [--simulations [SIMULATIONS]] filename
+
+positional arguments:
+  filename              CSV file with tasks estimates
+
+optional arguments:
+  -h, --help            show this help message and exit
+  --simulations [SIMULATIONS]
+                        Number of simulations to run
+```
+
+### Input format
+
+Estimates for tasks or milestones have to be defined in a CSV file with the following structure:
+
+- `Task`: [required] name of the task (`Milestone` works as header, too)
+- `Best`: [required] best case estimate for the task duration
+- `Expected`: [required] most likely estimate for the task duration
+- `Worst`: [required] worst case estimate for the task duration
+
+
+| Task   | Best | Expected | Worse |
+|--------|------|----------|-------|
+| Task A | 5    | 10       | 20    |
+| Task B | 6    | 12       | 40    |
+| Task C | 1    | 13       | 24    |
+| Task D | 10   | 13       | 15    |
+| Task E | 5    | 7        | 12    |
+| Task F | 12   | 25       | 34    |
+
+### Example
+
+```text
+$ cat tasks.csv
+Task,Best,Expected,Worse
+Task A,5,10,20
+Task B,6,12,40
+Task C,1,13,24
+Task D,10,13,15
+Task E,5,7,12
+Task F,12,25,34
+
+$ dumbpm guesstimate tasks.csv
+            Duration
+count  100000.000000
+mean        7.761430
+std         0.993793
+min         5.000000
+50%         8.000000
+5%         8.000000
+90%         9.000000
+99%        10.000000
+max        12.000000
+```
 
 ## Estimate project duration based on historical data
 
@@ -128,9 +191,9 @@ Giving a list of past sprint velocities and (optionally) a list of scope changes
 
 Please note that the estimate is measured in sprints, so you'll have to multiply that for the duration of your sprint and project that on your working calendar to account for holidays and anything else which could affect your schedule.
 
-To estimation is based on a [Monte Carlo simulation](https://en.wikipedia.org/wiki/Monte_Carlo_method) of the following inequation: `scope + sum(scope_change, over=sprints) <= sum(velocity, over=sprints)`. Pretty dumb, indeed.
+The estimation is based on a [Monte Carlo simulation](https://en.wikipedia.org/wiki/Monte_Carlo_method) of the following inequation: `scope + sum(scope_change, over=sprints) <= sum(velocity, over=sprints)`. Pretty dumb, indeed.
 
-By default, velocity and scope change for each iteration are picked at random following a uniform probability distribution from the provided historical data. If `--normal` is specified, the input will be modelled as normal distribution from which velocity and scope changes will be derived.
+By default, velocity and scope change for each iteration are picked at random following a [uniform probability distribution](https://en.wikipedia.org/wiki/Discrete_uniform_distribution) from the provided historical data. If `--normal` is specified, the input will be modelled as [normal distribution](https://en.wikipedia.org/wiki/Normal_distribution) from which velocity and scope changes will be derived.
 
 If it is taking too long to perform the estimation on your computer, set `--simulations` to something lower than `100000`.
 
