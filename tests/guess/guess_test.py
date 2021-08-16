@@ -1,8 +1,3 @@
-# from typing import List
-# from typing import Tuple
-#
-# import numpy as np
-# import pytest
 import pandas.testing
 
 from dumbpm.est.est import compute_duration

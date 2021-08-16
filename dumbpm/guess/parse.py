@@ -1,5 +1,4 @@
-import collections
-from typing import Counter
+from collections import Counter
 
 from pandas import DataFrame
 from pandas import read_csv
@@ -16,7 +15,7 @@ def parse_input(filename: str) -> DataFrame:
         raise ValueError("Task column must be specified")
     if csv["task"].isnull().values.any():
         raise ValueError("All tasks must have a name")
-    counts: Counter[str] = collections.Counter(csv["task"])
+    counts: Counter[str] = Counter(csv["task"])
     dups = [(i, c) for i, c in counts.items() if c > 1]
     if dups:
         raise ValueError(f"Task names must be unique: {dups}")

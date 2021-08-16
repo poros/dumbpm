@@ -1,6 +1,5 @@
-import collections
+from collections import Counter
 from itertools import chain
-from typing import Counter
 
 from pandas import DataFrame
 from pandas import read_csv
@@ -17,7 +16,7 @@ def parse_input(filename: str) -> DataFrame:
         raise ValueError("Projects column must be specified")
     if csv["project"].isnull().values.any():
         raise ValueError("All projects must have a name")
-    counts: Counter[str] = collections.Counter(csv["project"])
+    counts: Counter[str] = Counter(csv["project"])
     dups = [(i, c) for i, c in counts.items() if c > 1]
     if dups:
         raise ValueError(f"Projects names must be unique: {dups}")

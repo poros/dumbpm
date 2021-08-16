@@ -1,5 +1,4 @@
 import argparse
-from typing import List
 from typing import Optional
 
 from pandas import DataFrame
@@ -9,7 +8,7 @@ from dumbpm import guess
 from dumbpm import prio
 
 
-def cmd_prioritize(args: argparse.Namespace) -> List[str]:
+def cmd_prioritize(args: argparse.Namespace) -> list[str]:
     csv = prio.parse_input(args.filename)
     projects = prio.prioritize(
         projects=csv["project"],

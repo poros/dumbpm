@@ -1,10 +1,8 @@
-from typing import Dict
-from typing import List
 from typing import NamedTuple
-from typing import Tuple
+from typing import Tuple  # keep until PEP-585 fully supported in mypy
 
 
-def norm(items: List[float]) -> List[float]:
+def norm(items: list[float]) -> list[float]:
     """Normalize all items between (0 , 1) by min-max normalization,
     but set min=0 because 0s will degrade the prioritization algorithm.
     """
@@ -13,12 +11,12 @@ def norm(items: List[float]) -> List[float]:
 
 
 def compute_score(
-    value: List[float],
-    cost: List[float],
-    duration: List[float],
-    risk: List[float],
-    rigging: List[float],
-) -> List[float]:
+    value: list[float],
+    cost: list[float],
+    duration: list[float],
+    risk: list[float],
+    rigging: list[float],
+) -> list[float]:
     """
     Compute the score (used for prioritization) of each item by
     norm(norm(value) / (norm(cost) + norm(duration) + norm(risk))) + norm(rigging)
@@ -48,8 +46,8 @@ Items = Tuple[Item, ...]
 
 
 def combine_cost_and_duration(
-    cost: List[float], duration: List[float]
-) -> Tuple[List[float], List[float]]:
+    cost: list[float], duration: list[float]
+) -> tuple[list[float], list[float]]:
     """If cost is assumed to be per unit of duration, multuply them in a single cost
     parameter and erase duration from the equation, so not to account for it twice.
     """
@@ -60,16 +58,16 @@ def combine_cost_and_duration(
 
 
 def prioritize(
-    projects: List[str],
-    value: List[float],
-    cost: List[float],
-    duration: List[float],
-    risk: List[float],
-    rigging: List[float],
-    alternatives: List[Tuple[str, ...]],
+    projects: list[str],
+    value: list[float],
+    cost: list[float],
+    duration: list[float],
+    risk: list[float],
+    rigging: list[float],
+    alternatives: list[tuple[str, ...]],
     max_cost: float,
     cost_per_duration: bool,
-) -> List[str]:
+) -> list[str]:
     """Prioritize projects based on cost, value, duration and rigging, also making sure
     that the cost doesn't go over the maximum cost.
     Projects listed as alternative of each other won't be selected together.
@@ -107,8 +105,8 @@ def total_score(items: Items, max_weight: float) -> float:
 def prio(
     items: Items,
     max_weight: float,
-    mem: Dict[Tuple[Items, float], Items],
-    alts: Dict[str, Tuple[str, ...]],
+    mem: dict[tuple[Items, float], Items],
+    alts: dict[str, tuple[str, ...]],
 ) -> Items:
     """Actual function for prioritization.
     It is a Knapsack solver using dynamic programming with memorization.
