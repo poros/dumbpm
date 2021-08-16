@@ -5,6 +5,7 @@ from typing import Optional
 from pandas import DataFrame
 
 from dumbpm import est
+from dumbpm import guess
 from dumbpm import prio
 
 
@@ -29,7 +30,7 @@ def cmd_prioritize(args: argparse.Namespace) -> List[str]:
 def create_subparser_prioritize(subparsers: argparse._SubParsersAction) -> None:
     prio_parser = subparsers.add_parser(
         "prioritize",
-        help="Prioritize projects in a very dumb way.  See README for more info.",
+        help="Prioritize a list of projects. See README for more info.",
     )
     prio_parser.add_argument(
         "filename", type=str, help="CSV file with projects definition"
@@ -67,10 +68,26 @@ def cmd_estimate(
     return data
 
 
+def cmd_guesstimate(
+    args: argparse.Namespace, random_seed: Optional[int] = None
+) -> DataFrame:
+    csv = guess.parse_input(args.filename)
+    data = guess.guesstimate(
+        task=csv["task"],
+        best=csv["best"],
+        expected=csv["expected"],
+        worst=csv["worst"],
+        simulations=args.simulations,
+        random_seed=random_seed,
+    )
+    print(f"{data}")
+    return data
+
+
 def create_subparser_estimate(subparsers: argparse._SubParsersAction) -> None:
     est_parser = subparsers.add_parser(
         "estimate",
-        help="""Estimate projects duration in a reasonably dumb way.
+        help="""Estimate projects duration based on historical data.
         See README for more info.""",
     )
     est_parser.add_argument(
@@ -98,12 +115,34 @@ def create_subparser_estimate(subparsers: argparse._SubParsersAction) -> None:
     est_parser.set_defaults(func=cmd_estimate)
 
 
+def create_subparser_guesstimate(subparsers: argparse._SubParsersAction) -> None:
+    guess_parser = subparsers.add_parser(
+        "guesstimate",
+        help="""Estimate projects duration without historical data.
+        See README for more info.""",
+    )
+    guess_parser.add_argument(
+        "filename", type=str, help="CSV file with tasks estimates"
+    )
+
+    guess_parser.add_argument(
+        "--simulations",
+        type=int,
+        nargs="?",
+        default=100000,
+        help="Number of simulations to run",
+    )
+
+    guess_parser.set_defaults(func=cmd_guesstimate)
+
+
 def create_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description="A very dumb PM")
     parser.set_defaults(func=None)
     subparsers = parser.add_subparsers(title="subcommands")
     create_subparser_prioritize(subparsers)
     create_subparser_estimate(subparsers)
+    create_subparser_guesstimate(subparsers)
     return parser
 
 

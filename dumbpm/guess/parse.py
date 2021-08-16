@@ -1,0 +1,52 @@
+import collections
+from typing import Counter
+
+from pandas import DataFrame
+from pandas import read_csv
+
+
+def parse_input(filename: str) -> DataFrame:
+    """Parse csv input file using pandas."""
+    csv = read_csv(filename)
+    csv.rename(columns=lambda c: c.lower(), inplace=True)
+    if "tasks" in csv:
+        csv.rename(columns={"tasks": "task"}, inplace=True)
+
+    if "task" not in csv:
+        raise ValueError("Task column must be specified")
+    if csv["task"].isnull().values.any():
+        raise ValueError("All tasks must have a name")
+    counts: Counter[str] = collections.Counter(csv["task"])
+    dups = [(i, c) for i, c in counts.items() if c > 1]
+    if dups:
+        raise ValueError(f"Task names must be unique: {dups}")
+
+    if "best" not in csv:
+        raise ValueError("Best column must be specified")
+    if csv["best"].isnull().values.any():
+        raise ValueError("All tasks must have a best-case estimate")
+    if any(v < 0 for v in csv["best"].values):
+        raise ValueError("Negative best-case estimates are not allowed")
+
+    if "worst" not in csv:
+        raise ValueError("Worst column must be specified")
+    if csv["worst"].isnull().values.any():
+        raise ValueError("All tasks must have a worst-case estimate")
+    if any(v < 0 for v in csv["worst"].values):
+        raise ValueError("Negative worst-case estimates are not allowed")
+
+    if "worst" not in csv:
+        raise ValueError("Expected column must be specified")
+    if csv["worst"].isnull().values.any():
+        raise ValueError("All tasks must have an expected estimate")
+    if any(v < 0 for v in csv["worst"].values):
+        raise ValueError("Negative expected estimates are not allowed")
+
+    for row in csv.itertuples():
+        if not (row.best <= row.expected <= row.worst):
+            raise ValueError(
+                "Best-case, expected and worst-case estimates for a task must be "
+                f"monotonically increasing: {row=}"
+            )
+
+    return csv

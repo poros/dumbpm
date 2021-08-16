@@ -151,7 +151,7 @@ Estimates for tasks or milestones have to be defined in a CSV file with the foll
 - `Worst`: [required] worst case estimate for the task duration
 
 
-| Task   | Best | Expected | Worse |
+| Task   | Best | Expected | Worst |
 |--------|------|----------|-------|
 | Task A | 5    | 10       | 20    |
 | Task B | 6    | 12       | 40    |
@@ -164,7 +164,7 @@ Estimates for tasks or milestones have to be defined in a CSV file with the foll
 
 ```text
 $ cat tasks.csv
-Task,Best,Expected,Worse
+Task,Best,Expected,Worst
 Task A,5,10,20
 Task B,6,12,40
 Task C,1,13,24
