@@ -7,9 +7,9 @@ from pandas import read_csv
 def parse_input(filename: str) -> DataFrame:
     """Parse csv input file using pandas."""
     csv = read_csv(filename)
-    csv.rename(columns=lambda c: c.lower(), inplace=True)
-    if "tasks" in csv:
-        csv.rename(columns={"tasks": "task"}, inplace=True)
+    csv.rename(columns=lambda c: c.lower().rstrip("s"), inplace=True)
+    if "milestone" in csv:
+        csv.rename(columns={"milestone": "task"}, inplace=True)
 
     if "task" not in csv:
         raise ValueError("Task column must be specified")

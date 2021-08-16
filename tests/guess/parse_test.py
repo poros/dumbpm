@@ -63,6 +63,18 @@ def test_parse_non_monotonic() -> None:
         parse_input("tests/guess/csvs/non_monotonic.csv")
 
 
+def test_parse_milestone() -> None:
+    csv = parse_input("tests/guess/csvs/milestones.csv")
+    assert list(csv["task"].values) == [
+        "Task A",
+        "Task B",
+        "Task C",
+        "Task D",
+        "Task E",
+        "Task F",
+    ]
+
+
 def test_parse_input() -> None:
     csv = parse_input("tests/guess/csvs/tasks.csv")
     assert not csv.isnull().values.any()

@@ -10,7 +10,7 @@ flatten = chain.from_iterable
 def parse_input(filename: str) -> DataFrame:
     """Parse csv input file using pandas."""
     csv = read_csv(filename)
-    csv.rename(columns=lambda c: c.lower().strip("s"), inplace=True)
+    csv.rename(columns=lambda c: c.lower().rstrip("s"), inplace=True)
 
     if "project" not in csv:
         raise ValueError("Projects column must be specified")

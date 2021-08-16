@@ -41,7 +41,6 @@ def test_estimate() -> None:
         simulations=10,
         random_seed=1234,
     )
-    print(actual)
     expected = compute_stats([19, 19, 24, 21, 16, 23, 19, 22, 16, 21])
     pandas.testing.assert_frame_equal(expected, actual)
 
