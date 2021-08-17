@@ -17,7 +17,7 @@ clean:
 	rm -rf dist
 
 .PHONY: dist
-dist: venv
+dist: install
 	poetry build
 
 .PHONY: upload-to-pypi
