@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "dumbpm"
-version = "0.7.0"
+version = "0.7.1"
 classifiers=[
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3.9",
@@ -9,6 +9,7 @@ description = "A pretty dumb PM."
 authors = ["Antonio Uccio Verardi <antonio.uccio.verardi@gmail.com>"]
 license = "Apache-2.0"
 readme = "README.md"
+documentation = "https://poros.github.io/dumbpm/"
 repository = "https://github.com/poros/dumbpm"
 keywords = ["project management", "agile", "estimate", "PM"]
 

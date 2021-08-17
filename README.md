@@ -26,6 +26,8 @@ pip install dumbpm
 
 Tested on both Linux and Mac OS. Windows _might_ work.
 
+**NOTE** Python 3.9+ required.
+
 ## Prioritize projects
 
 Giving a table of projects defined as below, it outputs a list of projects in order of priority within the optionally specified budget (prioritization as "data problem").
