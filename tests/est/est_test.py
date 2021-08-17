@@ -1,14 +1,9 @@
-# from typing import List
-# from typing import Tuple
-#
-# import numpy as np
-# import pytest
 import pandas.testing
 
 from dumbpm.est.est import compute_duration
 from dumbpm.est.est import compute_max_sprints
-from dumbpm.est.est import compute_stats
 from dumbpm.est.est import estimate
+from dumbpm.shared import compute_stats
 
 
 def test_compute_max_sprints() -> None:
@@ -46,7 +41,6 @@ def test_estimate() -> None:
         simulations=10,
         random_seed=1234,
     )
-    print(actual)
     expected = compute_stats([19, 19, 24, 21, 16, 23, 19, 22, 16, 21])
     pandas.testing.assert_frame_equal(expected, actual)
 

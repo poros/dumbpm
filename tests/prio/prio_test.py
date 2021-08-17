@@ -1,6 +1,3 @@
-from typing import List
-from typing import Tuple
-
 import numpy as np
 import pytest
 
@@ -56,7 +53,7 @@ def test_prioritize() -> None:
     duration = [10.0, 10.0, 10.0, 10.0]
     risk = [3.0, 3.0, 3.0, 3.0]
     rigging = [0.0, 10.0, 0.0, 1.0]
-    alternatives: List[Tuple[str, ...]] = [(), (), (), ()]
+    alternatives: list[tuple[str, ...]] = [(), (), (), ()]
     max_cost = 20.0
     assert (
         prioritize(
@@ -83,7 +80,7 @@ def test_prioritize_cost_per_duration() -> None:
     unit_duration = [1.0, 1.0, 1.0, 1.0]
     risk = [3.0, 3.0, 3.0, 3.0]
     rigging = [0.0, 0.0, 0.0, 0.0]
-    alternatives: List[Tuple[str, ...]] = [(), (), (), ()]
+    alternatives: list[tuple[str, ...]] = [(), (), (), ()]
     max_cost = 200.0
     assert (
         prioritize(
@@ -119,7 +116,7 @@ def test_prioritize_with_alternatives() -> None:
     duration = [10.0, 10.0, 10.0, 10.0]
     risk = [3.0, 3.0, 3.0, 3.0]
     rigging = [0.0, 10.0, 0.1, 1.0]
-    alternatives: List[Tuple[str, ...]] = [(), ("D",), (), ("B",)]
+    alternatives: list[tuple[str, ...]] = [(), ("D",), (), ("B",)]
     max_cost = 20.0
     assert (
         prioritize(
