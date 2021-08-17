@@ -1,7 +1,10 @@
 from collections import Counter
+from itertools import chain
 
 from pandas import DataFrame
 from pandas import read_csv
+
+flatten = chain.from_iterable
 
 
 def parse_input(filename: str) -> DataFrame:
@@ -24,22 +27,19 @@ def parse_input(filename: str) -> DataFrame:
         raise ValueError("Best column must be specified")
     if csv["best"].isnull().values.any():
         raise ValueError("All tasks must have a best-case estimate")
-    if any(v < 0 for v in csv["best"].values):
-        raise ValueError("Negative best-case estimates are not allowed")
 
     if "worst" not in csv:
         raise ValueError("Worst column must be specified")
     if csv["worst"].isnull().values.any():
         raise ValueError("All tasks must have a worst-case estimate")
-    if any(v < 0 for v in csv["worst"].values):
-        raise ValueError("Negative worst-case estimates are not allowed")
 
-    if "worst" not in csv:
+    if "expected" not in csv:
         raise ValueError("Expected column must be specified")
-    if csv["worst"].isnull().values.any():
+    if csv["expected"].isnull().values.any():
         raise ValueError("All tasks must have an expected estimate")
-    if any(v < 0 for v in csv["worst"].values):
-        raise ValueError("Negative expected estimates are not allowed")
+
+    if any(filter(lambda x: isinstance(x, int) and x < 0, flatten(csv.values))):
+        raise ValueError("Negative estimates are not allowed")
 
     for row in csv.itertuples():
         if not (row.best <= row.expected <= row.worst):
