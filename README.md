@@ -8,9 +8,12 @@
 * [Prioritize projects](#prioritize-projects)
   + [Projects format](#projects-format)
   + [Example](#example)
-* [Estimate project duration](#estimate-project-duration)
+* [Estimate project duration without historical data](#estimate-project-duration-without-historical-data)
   + [Input format](#input-format)
   + [Example](#example-1)
+* [Estimate project duration based on historical data](#estimate-project-duration-based-on-historical-data)
+  + [Input format](#input-format-1)
+  + [Example](#example-2)
 
 A pretty dumb PM.
 
