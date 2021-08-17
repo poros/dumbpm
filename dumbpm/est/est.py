@@ -6,6 +6,8 @@ from numpy.random import default_rng
 from pandas import DataFrame
 from scipy.stats import norm
 
+from dumbpm.shared import compute_stats
+
 
 def compute_duration(
     scope: int,
@@ -22,13 +24,6 @@ def compute_duration(
         if scope <= delta:
             return n + 1
     return max_sprints
-
-
-def compute_stats(duration: list[int]) -> DataFrame:
-    """Statistics to visualize for the result of the simulation."""
-    return DataFrame(duration, columns=["Duration"]).describe(
-        percentiles=[0.5, 0.75, 0.90, 0.99]
-    )
 
 
 def compute_max_sprints(scope: int, velocity: list[float], change: list[float]) -> int:
@@ -66,8 +61,8 @@ def generate_sprints_simulator(
         change_norm = norm(loc=change_mean, scale=change_stdev)
 
         def generate_sprints() -> tuple[list[float], list[float]]:
-            rn_velocity = velocity_norm.rvs(max_sprints, random_state=rng).round(0)
-            rn_change = change_norm.rvs(max_sprints, random_state=rng).round(0)
+            rn_velocity = velocity_norm.rvs(size=max_sprints, random_state=rng).round(0)
+            rn_change = change_norm.rvs(size=max_sprints, random_state=rng).round(0)
             return rn_velocity, rn_change
 
     else:

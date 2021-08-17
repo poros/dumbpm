@@ -2,8 +2,8 @@ import pandas.testing
 
 from dumbpm.est.est import compute_duration
 from dumbpm.est.est import compute_max_sprints
-from dumbpm.est.est import compute_stats
 from dumbpm.est.est import estimate
+from dumbpm.shared import compute_stats
 
 
 def test_compute_max_sprints() -> None:
