@@ -29,10 +29,16 @@ def compute_beta_dist_params(est: ThreePointEstimate) -> BetaParams:
     # are using a Monte Carlo simulation to compensate that, it makes sense to lower it.
     # Wikipedia says the usual values for modified PERT go from 2 to 3.5.
     lamb = 2.5
-    a = 1 + lamb * (est.expected - est.best) / (est.worst - est.best)
-    b = 1 + lamb * (est.worst - est.expected) / (est.worst - est.best)
     loc = est.best
     scale = est.worst - est.best
+    # in case it's a flat line with all three estimates matching
+    # monotonicity it's already checked at parsing time, so no issue here
+    if est.best == est.worst:
+        a = 1.0
+        b = 1.0
+    else:
+        a = 1 + lamb * (est.expected - est.best) / (est.worst - est.best)
+        b = 1 + lamb * (est.worst - est.expected) / (est.worst - est.best)
     return BetaParams(a, b, loc, scale)
 
 

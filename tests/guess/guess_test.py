@@ -16,6 +16,19 @@ def test_compute_beta_dist_params() -> None:
     np.testing.assert_allclose(params.scale, 50)  # type: ignore
 
 
+def test_guesstimate_best_equal_worst() -> None:
+    actual = guesstimate(
+        task=["Task A", "Task B"],
+        best=[5, 6],
+        expected=[5, 6],
+        worst=[5, 6],
+        simulations=10,
+        random_seed=1234,
+    )
+    expected = compute_stats([11, 11, 11, 11, 11, 11, 11, 11, 11, 11])
+    pandas.testing.assert_frame_equal(expected, actual)
+
+
 def test_guesstimate() -> None:
     actual = guesstimate(
         task=["Task A", "Task B", "Task C", "Task D", "Task E", "Task F"],
