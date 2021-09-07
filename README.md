@@ -129,7 +129,7 @@ The estimation is based on a [Monte Carlo simulation](https://en.wikipedia.org/w
 
 The command is called `guesstimate` to highlight that the result of this method should be considered with lower confidence than the one produced by the `estimate` command, which is based on historical data. You can switch to `estimate` after you conclude a few sprints, while relying on `guesstimate` for the initial estimates during the planning period.
 
-If it is taking too long to perform the estimation on your computer, set `--simulations` to something lower than `100000`.
+If it is taking too long to perform the estimation on your computer, set `--simulations` to something lower than `10000`.
 
 ```bash
 $ dumbpm guesstimate --help
@@ -177,7 +177,7 @@ Task F,12,25,34
 
 $ dumbpm guesstimate tasks.csv
             Duration
-count  100000.000000
+count   10000.000000
 mean        7.761430
 std         0.993793
 min         5.000000
@@ -198,7 +198,7 @@ The estimation is based on a [Monte Carlo simulation](https://en.wikipedia.org/w
 
 By default, velocity and scope change for each iteration are picked at random following a [uniform probability distribution](https://en.wikipedia.org/wiki/Discrete_uniform_distribution) from the provided historical data. If `--normal` is specified, the input will be modelled as [normal distribution](https://en.wikipedia.org/wiki/Normal_distribution) from which velocity and scope changes will be derived.
 
-If it is taking too long to perform the estimation on your computer, set `--simulations` to something lower than `100000`.
+If it is taking too long to perform the estimation on your computer, set `--simulations` to something lower than `10000`.
 
 ```bash
 $ dumbpm estimate --help
@@ -257,7 +257,7 @@ Velocity,Change
 
 $ dumbpm estimate sprints.csv 100
             Duration
-count  100000.000000
+count   10000.000000
 mean        7.761430
 std         0.993793
 min         5.000000
@@ -269,7 +269,7 @@ max        12.000000
 
 $ dumbpm prioritize projects.csv 100 --normal
            Duration
-count  100000.00000
+count   10000.00000
 mean        7.75637
 std         0.99810
 min         4.00000

@@ -107,7 +107,7 @@ def create_subparser_estimate(subparsers: argparse._SubParsersAction) -> None:
         "--simulations",
         type=int,
         nargs="?",
-        default=100000,
+        default=10000,
         help="Number of simulations to run",
     )
 
@@ -128,7 +128,7 @@ def create_subparser_guesstimate(subparsers: argparse._SubParsersAction) -> None
         "--simulations",
         type=int,
         nargs="?",
-        default=100000,
+        default=10000,
         help="Number of simulations to run",
     )
 
