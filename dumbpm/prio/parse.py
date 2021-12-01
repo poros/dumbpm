@@ -98,9 +98,7 @@ def check_pick_vs_alternatives(
 ) -> None:
     """Check that must pick projects don't conflict with alternatives."""
     must_picks = {k: v for k, v in picks.items() if v}
-    print(must_picks)
     must_alts = {p: alts[p] for p in must_picks.keys()}
-    print(must_alts)
     for k, v in must_alts.items():
         for p in v:
             if p in must_picks:
