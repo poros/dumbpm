@@ -46,11 +46,12 @@ def parse_input(filename: str) -> DataFrame:
             "All projects must have a risk, if the Risk column is specified"
         )
 
-    csv.rename(columns={"rig": "rigging"}, inplace=True)
-    if "rigging" not in csv:
-        csv["rigging"] = [0] * len(csv["project"])
+    if "pick" not in csv:
+        csv["pick"] = [False] * len(csv["project"])
     else:
-        csv["rigging"].fillna(0, inplace=True)
+        csv["pick"].fillna(False, inplace=True)
+    if csv["pick"].dtypes.name != "bool":
+        raise ValueError("Pick values must be boolean")
 
     csv.rename(columns={"alt": "alternative"}, inplace=True)
     if "alternative" not in csv:
@@ -77,7 +78,33 @@ def parse_input(filename: str) -> DataFrame:
             f"{asym[0]} lists {asym[1]} as alternative, but not the other way around"
         )
 
-    if any(filter(lambda x: isinstance(x, float) and x < 0, flatten(csv.values))):
+    picks_map = dict(zip(csv["project"], csv["pick"]))
+    check_pick_vs_alternatives(picks_map, alts_map)
+
+    if any(
+        filter(
+            lambda x: (isinstance(x, float) or isinstance(x, int)) and x < 0,
+            flatten(csv.values),
+        )
+    ):
         raise ValueError("Negative values are not allowed")
 
     return csv
+
+
+def check_pick_vs_alternatives(
+    picks: dict[str, bool],
+    alts: dict[str, tuple[str, ...]],
+) -> None:
+    """Check that must pick projects don't conflict with alternatives."""
+    must_picks = {k: v for k, v in picks.items() if v}
+    print(must_picks)
+    must_alts = {p: alts[p] for p in must_picks.keys()}
+    print(must_alts)
+    for k, v in must_alts.items():
+        for p in v:
+            if p in must_picks:
+                raise ValueError(
+                    f"Project {k} and project {p} are both must picks but incompatible"
+                )
+    return

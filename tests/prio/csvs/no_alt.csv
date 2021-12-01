@@ -1,5 +1,5 @@
-Projects,Value,cost,durations,Rig
-Project A,1,4,2,9
-Project B,1,1,1,
-C,5,2,4,
-D,1,2,6,5
+Projects,Value,cost,durations,Pick
+Project A,1,4,2,FALSE
+Project B,1,1,1,FALSE
+C,5,2,6,FALSE
+D,1,2,6,FALSE

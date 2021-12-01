@@ -46,9 +46,9 @@ def test_cmd_prioritize() -> None:
             "--cost-per-duration",
         ]
     )
-    assert cmd_prioritize(args) == ["Project A", "Project B"]
+    assert cmd_prioritize(args) == ["Project B", "Project A"]
     args = parser.parse_args(["prioritize", "tests/prio/csvs/no_alt.csv"])
-    assert cmd_prioritize(args) == ["Project A", "C", "D", "Project B"]
+    assert cmd_prioritize(args) == ["C", "Project B", "Project A", "D"]
 
 
 def test_subparser_estimate() -> None:
@@ -118,7 +118,7 @@ def test_main() -> None:
             "prioritize",
             "tests/prio/csvs/prio.csv",
             "--budget",
-            "3",
+            "30",
             "--cost-per-duration",
         ],
         check=True,

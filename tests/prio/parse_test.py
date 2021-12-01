@@ -57,7 +57,7 @@ def test_parse_no_duration() -> None:
         "cost",
         "duration",
         "risk",
-        "rigging",
+        "pick",
         "alternative",
     }
     assert list(csv["duration"].values) == [0, 0, 0, 0]
@@ -77,7 +77,7 @@ def test_parse_no_risk() -> None:
         "cost",
         "duration",
         "risk",
-        "rigging",
+        "pick",
         "alternative",
     }
     assert list(csv["risk"].values) == [0, 0, 0, 0]
@@ -88,8 +88,8 @@ def test_parse_missing_one_risk() -> None:
         parse_input("tests/prio/csvs/missing_one_risk.csv")
 
 
-def test_parse_no_rigging() -> None:
-    csv = parse_input("tests/prio/csvs/no_rig.csv")
+def test_parse_no_pick() -> None:
+    csv = parse_input("tests/prio/csvs/no_pick.csv")
     assert not csv.isnull().values.any()
     assert set(csv.columns) == {
         "project",
@@ -97,14 +97,14 @@ def test_parse_no_rigging() -> None:
         "cost",
         "duration",
         "risk",
-        "rigging",
+        "pick",
         "alternative",
     }
-    assert list(csv["rigging"].values) == [0, 0, 0, 0]
+    assert list(csv["pick"].values) == [False, False, False, False]
 
 
-def test_parse_missing_one_rigging() -> None:
-    csv = parse_input("tests/prio/csvs/missing_one_rig.csv")
+def test_parse_missing_one_pick() -> None:
+    csv = parse_input("tests/prio/csvs/missing_one_pick.csv")
     assert not csv.isnull().values.any()
     assert set(csv.columns) == {
         "project",
@@ -112,10 +112,15 @@ def test_parse_missing_one_rigging() -> None:
         "cost",
         "duration",
         "risk",
-        "rigging",
+        "pick",
         "alternative",
     }
-    assert list(csv["rigging"].values) == [0.0, 3.0]
+    assert list(csv["pick"].values) == [False, True]
+
+
+def test_parse_input_pick_no_bool() -> None:
+    with pytest.raises(ValueError):
+        parse_input("tests/prio/csvs/pick_wrong.csv")
 
 
 def test_parse_no_alternatives() -> None:
@@ -127,7 +132,7 @@ def test_parse_no_alternatives() -> None:
         "cost",
         "duration",
         "risk",
-        "rigging",
+        "pick",
         "alternative",
     }
     assert list(csv["alternative"].values) == [(), (), (), ()]
@@ -142,7 +147,7 @@ def test_parse_missing_one_alternative() -> None:
         "cost",
         "duration",
         "risk",
-        "rigging",
+        "pick",
         "alternative",
     }
     assert list(csv["alternative"].values) == [("B",), ("A",), ()]
@@ -151,6 +156,11 @@ def test_parse_missing_one_alternative() -> None:
 def test_parse_wrong_alternatives() -> None:
     with pytest.raises(ValueError):
         parse_input("tests/prio/csvs/wrong_alt.csv")
+
+
+def test_parse_pick_conflicts_alternatives() -> None:
+    with pytest.raises(ValueError):
+        parse_input("tests/prio/csvs/pick_vs_alts.csv")
 
 
 def test_parse_asymmetrical_alternatives() -> None:
@@ -167,7 +177,7 @@ def test_parse_input() -> None:
         "cost",
         "duration",
         "risk",
-        "rigging",
+        "pick",
         "alternative",
     }
     assert list(csv["project"].values) == ["Project A", "Project B", "C", "D"]
@@ -175,7 +185,7 @@ def test_parse_input() -> None:
     assert list(csv["cost"].values) == [4.0, 0.0, 2.0, 2.0]
     assert list(csv["duration"].values) == [2.0, 1.0, 4.0, 6.0]
     assert list(csv["risk"].values) == [5.0, 1.0, 1.0, 1.0]
-    assert list(csv["rigging"].values) == [9.0, 0.0, 0.0, 5.0]
+    assert list(csv["pick"].values) == [True, False, False, True]
     assert list(csv["alternative"].values) == [
         ("Project B",),
         ("Project A", "C"),

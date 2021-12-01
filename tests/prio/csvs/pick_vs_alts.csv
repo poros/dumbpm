@@ -1,5 +1,5 @@
 Projects,Value,PQs,durations,risk,Pick,alternatives
 Project A,0,4,2,5,TRUE,"Project B"
-Project B,1,0,1,1,,"Project A, C"
+Project B,1,0,1,1,TRUE,"Project A, C"
 C,5,2,4,1,FALSE,Project B
-D,0,2,6,1,TRUE
+D,0,2,6,1,

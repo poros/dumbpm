@@ -24,10 +24,9 @@ def test_compute_score() -> None:
     cost = [20.0, 10.0]
     duration = [20.0, 10.0]
     risk = [3.0, 6.0]
-    rigging = [1.0, 5.0]
 
     np.testing.assert_allclose(  # type: ignore
-        compute_score(value, cost, duration, risk, rigging), [0.6, 2.0]
+        compute_score(value, cost, duration, risk), [0.2, 0.5]
     )
 
 
@@ -36,9 +35,8 @@ def test_compute_score_div_by_zero() -> None:
     cost = [20.0, 0.0]
     duration = [20.0, 0.0]
     risk = [3.0, 0.0]
-    rigging = [1.0, 5.0]
     with pytest.raises(ValueError):
-        compute_score(value, cost, duration, risk, rigging)
+        compute_score(value, cost, duration, risk)
 
 
 def test_total_score() -> None:
@@ -48,11 +46,11 @@ def test_total_score() -> None:
 
 def test_prioritize() -> None:
     projects = ["A", "B", "C", "D"]
-    value = [10.0, 10.0, 10.0, 10.0]
+    value = [10.0, 20.0, 10.0, 10.0]
     cost = [10.0, 10.0, 10.0, 10.0]
     duration = [10.0, 10.0, 10.0, 10.0]
-    risk = [3.0, 3.0, 3.0, 3.0]
-    rigging = [0.0, 10.0, 0.0, 1.0]
+    risk = [3.0, 3.0, 3.0, 1.0]
+    pick = [False, False, False, False]
     alternatives: list[tuple[str, ...]] = [(), (), (), ()]
     max_cost = 20.0
     assert (
@@ -62,7 +60,7 @@ def test_prioritize() -> None:
             cost,
             duration,
             risk,
-            rigging,
+            pick,
             alternatives,
             max_cost,
             cost_per_duration=False,
@@ -79,7 +77,7 @@ def test_prioritize_cost_per_duration() -> None:
     multiplied_cost = [100.0, 100.0, 500.0, 100.0]
     unit_duration = [1.0, 1.0, 1.0, 1.0]
     risk = [3.0, 3.0, 3.0, 3.0]
-    rigging = [0.0, 0.0, 0.0, 0.0]
+    pick = [False, False, False, False]
     alternatives: list[tuple[str, ...]] = [(), (), (), ()]
     max_cost = 200.0
     assert (
@@ -89,7 +87,7 @@ def test_prioritize_cost_per_duration() -> None:
             cost,
             duration,
             risk,
-            rigging,
+            pick,
             alternatives,
             max_cost,
             cost_per_duration=True,
@@ -100,7 +98,7 @@ def test_prioritize_cost_per_duration() -> None:
             multiplied_cost,
             unit_duration,
             risk,
-            rigging,
+            pick,
             alternatives,
             max_cost,
             cost_per_duration=False,
@@ -109,13 +107,61 @@ def test_prioritize_cost_per_duration() -> None:
     )
 
 
-def test_prioritize_with_alternatives() -> None:
+def test_prioritize_picks() -> None:
     projects = ["A", "B", "C", "D"]
-    value = [10.0, 10.0, 10.0, 10.0]
+    value = [10.0, 10.0, 20.0, 10.0]
     cost = [10.0, 10.0, 10.0, 10.0]
     duration = [10.0, 10.0, 10.0, 10.0]
     risk = [3.0, 3.0, 3.0, 3.0]
-    rigging = [0.0, 10.0, 0.1, 1.0]
+    pick = [False, True, False, True]
+    alternatives: list[tuple[str, ...]] = [(), (), (), ()]
+    max_cost = 30.0
+    assert (
+        prioritize(
+            projects,
+            value,
+            cost,
+            duration,
+            risk,
+            pick,
+            alternatives,
+            max_cost,
+            cost_per_duration=False,
+        )
+        == ["C", "B", "D"]
+    )
+
+
+def test_prioritize_picks_over_budget() -> None:
+    projects = ["A", "B", "C", "D"]
+    value = [10.0, 10.0, 20.0, 10.0]
+    cost = [10.0, 10.0, 10.0, 10.0]
+    duration = [10.0, 10.0, 10.0, 10.0]
+    risk = [3.0, 3.0, 3.0, 3.0]
+    pick = [False, True, False, True]
+    alternatives: list[tuple[str, ...]] = [(), (), (), ()]
+    max_cost = 19.0
+    with pytest.raises(ValueError):
+        prioritize(
+            projects,
+            value,
+            cost,
+            duration,
+            risk,
+            pick,
+            alternatives,
+            max_cost,
+            cost_per_duration=False,
+        )
+
+
+def test_prioritize_with_alternatives() -> None:
+    projects = ["A", "B", "C", "D"]
+    value = [10.0, 30.0, 11.0, 20.0]
+    cost = [10.0, 10.0, 10.0, 10.0]
+    duration = [10.0, 10.0, 10.0, 10.0]
+    risk = [3.0, 3.0, 3.0, 3.0]
+    pick = [False, False, False, False]
     alternatives: list[tuple[str, ...]] = [(), ("D",), (), ("B",)]
     max_cost = 20.0
     assert (
@@ -125,7 +171,7 @@ def test_prioritize_with_alternatives() -> None:
             cost,
             duration,
             risk,
-            rigging,
+            pick,
             alternatives,
             max_cost,
             cost_per_duration=False,

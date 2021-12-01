@@ -1,5 +1,5 @@
-Project,Value,Cost,Duration,Rigging
-Project A,1,4,2,9
+Project,Value,Cost,Duration,Pick
+Project A,1,4,2,True
 Project B,1,1,1,
 C,5,2,4,
-D,1,2,6,-5
+D,1,2,-5,

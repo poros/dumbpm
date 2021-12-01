@@ -2,4 +2,4 @@ Projects,Value,cost,Pick,alternatives
 Project A,1,4,TRUE,"Project B"
 Project B,1,1,FALSE,"Project A, C"
 C,5,2,FALSE,Project B
-D,1,2,FALSE,
+D,1,2,5

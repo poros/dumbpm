@@ -15,16 +15,13 @@ def compute_score(
     cost: list[float],
     duration: list[float],
     risk: list[float],
-    rigging: list[float],
 ) -> list[float]:
     """
     Compute the score (used for prioritization) of each item by
-    norm(norm(value) / (norm(cost) + norm(duration) + norm(risk))) + norm(rigging)
+    norm(value) / (norm(cost) + norm(duration) + norm(risk))
 
     Normalization of parameters is necessary because the algorithm makes no
-    assumption about the interval of each parameter. The additional normalization
-    before summing up rigging and the rest of the equation is so that rigging can
-    have a sizeable influence in the outcome even if normalized.
+    assumption about the interval of each parameter.
     """
     numerator = norm(value)
     denominator = [c + d + r for c, d, r in zip(norm(cost), norm(duration), norm(risk))]
@@ -32,8 +29,7 @@ def compute_score(
         raise ValueError(
             "At least one project has 0 as combination of cost, duration and risk"
         )
-    fraction = norm([n / d for n, d in zip(numerator, denominator)])
-    return [f + r for f, r in zip(fraction, norm(rigging))]
+    return [n / d for n, d in zip(numerator, denominator)]
 
 
 class Item(NamedTuple):
@@ -63,34 +59,64 @@ def prioritize(
     cost: list[float],
     duration: list[float],
     risk: list[float],
-    rigging: list[float],
+    pick: list[bool],
     alternatives: list[tuple[str, ...]],
     max_cost: float,
     cost_per_duration: bool,
 ) -> list[str]:
-    """Prioritize projects based on cost, value, duration and rigging, also making sure
+    """Prioritize projects based on cost, value and duration, also making sure
     that the cost doesn't go over the maximum cost.
+    Projects listed as must pick will be added to the solution. If must pick
+    projects exceed the budget, an exception will be raised.
     Projects listed as alternative of each other won't be selected together.
     For the formula used to compute the prioritizaion score of each item see
     compute_score.
     If cost_per_duration is True, cost is assumed to be per unit of duration.
+
+    At parsing time we have already checked the compatibility of picks and
+    alternatives together with alternatives simmetry.
     """
+    must_picks = dict(zip(projects, pick))
+    alts = dict(zip(projects, alternatives))
+
     n_cost, n_duration = (
         combine_cost_and_duration(cost, duration)
         if cost_per_duration
         else (cost, duration)
     )
-    score = compute_score(value, n_cost, n_duration, risk, rigging)
+    score = compute_score(value, n_cost, n_duration, risk)
     weight = n_cost
-    alts = dict(zip(projects, alternatives))
+    items = tuple(Item(*x) for x in zip(projects, score, weight))
+
+    must_solution, prio_cost = pick_projects(items, must_picks, max_cost)
+    prio_items = tuple(set(items) - set(must_solution))
+
     solution = prio(
-        tuple(Item(*x) for x in zip(projects, score, weight)),
-        max_cost,
+        prio_items,
+        prio_cost,
         {},
         alts,
     )
-    sorted_solution = sorted(solution, key=lambda k: k[1], reverse=True)
-    return [s[0] for s in sorted_solution]
+
+    combined_solution = must_solution + solution
+    sorted_solution = sorted(combined_solution, key=lambda k: k.score, reverse=True)
+    return [s.name for s in sorted_solution]
+
+
+def pick_projects(
+    items: Items,
+    must_picks: dict[str, bool],
+    max_cost: float,
+) -> tuple[Items, float]:
+    """Pick the projects that the solution must include and compute the remaining cost.
+    Raise an exception in case the must pick project go over the budget."""
+    solution = tuple(i for i in items if must_picks[i.name])
+    cost = sum(s.weight for s in solution)
+    if cost > max_cost:
+        raise ValueError(
+            f"The cost of must pick projects is over the budget: {cost} > {max_cost}"
+        )
+    return (solution, max_cost - cost)
 
 
 def total_score(items: Items, max_weight: float) -> float:
@@ -115,7 +141,7 @@ def prio(
         return ()
     if (items, max_weight) not in mem:
         excluded = prio(items[1:], max_weight, mem, alts)
-        alternatives = alts[items[0][0]]
+        alternatives = alts[items[0].name]
         items_left = tuple(i for i in items[1:] if i[0] not in alternatives)
         included = (items[0],) + prio(
             items_left, max_weight - items[0].weight, mem, alts
